@@ -14,7 +14,7 @@
         <artifactId>parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
-    <name>Stamina - Boot Helper</name>
+    <name>Stamina Boot Helper</name>
     <artifactId>io.stamina.boot.helper</artifactId>
 
     <dependencies>

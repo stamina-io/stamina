@@ -14,7 +14,7 @@
         <artifactId>parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
-    <name>Stamina - Starter</name>
+    <name>Stamina Starter</name>
     <artifactId>io.stamina.starter</artifactId>
 
     <description>
