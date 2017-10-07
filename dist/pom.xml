@@ -193,8 +193,8 @@
                         </goals>
                         <configuration>
                             <descriptors>
-                                <descriptor>${project.basedir}/src/assembly/dist-win.xml</descriptor>
-                                <descriptor>${project.basedir}/src/assembly/dist-unix.xml</descriptor>
+                                <descriptor>${project.basedir}/src/assembly/bin-win.xml</descriptor>
+                                <descriptor>${project.basedir}/src/assembly/bin-unix.xml</descriptor>
                             </descriptors>
                             <tarLongFileMode>gnu</tarLongFileMode>
                         </configuration>
