@@ -40,6 +40,12 @@
                 <artifactId>osgi.annotation</artifactId>
                 <version>6.0.1</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.fileinstall</artifactId>
+                <version>3.6.2</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -72,5 +78,6 @@
         <module>boot.helper</module>
         <module>command</module>
         <module>dist</module>
+        <module>subsystem</module>
     </modules>
 </project>

@@ -34,11 +34,15 @@
             <artifactId>io.stamina.command</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>io.stamina.subsystem</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.fileinstall</artifactId>
-            <version>3.6.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
