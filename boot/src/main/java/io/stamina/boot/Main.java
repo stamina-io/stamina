@@ -118,6 +118,7 @@ public class Main {
             switch (event.getType()) {
                 case FrameworkEvent.ERROR:
                     logger.fatal(() -> "Fatal error", event.getThrowable());
+                    System.exit(1);
                     break;
                 case FrameworkEvent.INFO:
                     logger.info(() -> event.toString());
@@ -232,7 +233,7 @@ public class Main {
             public void run() {
                 try {
                     fmk.stop();
-                    fmk.waitForStop(0);
+                    fmk.waitForStop(10000);
                 } catch (Exception e) {
                     logger.fatal(() -> "Failed to properly stop OSGi framework", e);
                 }
