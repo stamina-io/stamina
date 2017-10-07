@@ -1,0 +1,40 @@
+<!--
+  ~ Copyright (c) 2017 Stamina developers.
+  ~ All rights reserved.
+  -->
+
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+    <id>dist</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <dependencySets>
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>*:io.stamina.boot</include>
+                <include>*:org.apache.felix.framework</include>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+    <fileSets>
+        <fileSet>
+            <outputDirectory>sys</outputDirectory>
+            <directory>${project.build.directory}/sys-repo</directory>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>.</outputDirectory>
+            <lineEnding>windows</lineEnding>
+            <directory>${project.basedir}/src/assembly/files/win</directory>
+            <filtered>true</filtered>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>.</outputDirectory>
+            <lineEnding>windows</lineEnding>
+            <directory>${project.basedir}/src/assembly/files/shared</directory>
+            <filtered>true</filtered>
+        </fileSet>
+    </fileSets>
+</assembly>
