@@ -79,5 +79,6 @@
         <module>command</module>
         <module>dist</module>
         <module>subsystem</module>
+        <module>starter</module>
     </modules>
 </project>
