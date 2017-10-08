@@ -37,5 +37,14 @@
             <directory>${project.basedir}/src/assembly/files/shared</directory>
             <filtered>true</filtered>
         </fileSet>
+        <fileSet>
+            <outputDirectory>.</outputDirectory>
+            <directory>${project.basedir}/..</directory>
+            <lineEnding>unix</lineEnding>
+            <includes>
+                <include>LICENSE.txt</include>
+                <include>NOTICE.txt</include>
+            </includes>
+        </fileSet>
     </fileSets>
 </assembly>

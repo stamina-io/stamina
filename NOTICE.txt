@@ -1,0 +1,7 @@
+Stamina.io
+Copyright (c) 2017 Stamina.io developers
+
+This product includes software developed at
+ - The Apache Software Foundation (http://www.apache.org/)
+ - Open Participation for Java (https://github.com/ops4j)
+ - The Eclipse Foundation (http://www.eclipse.org)
