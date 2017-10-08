@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-rem Copyright (c) 2017 Stamina developers.
+rem Copyright (c) 2017 Stamina.io developers.
 rem All rights reserved.
 
 set "STAMINA_HOME=%~dp0
