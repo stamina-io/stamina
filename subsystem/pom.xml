@@ -16,7 +16,7 @@
     </parent>
     <name>Stamina Subsystem</name>
     <artifactId>io.stamina.subsystem</artifactId>
-    <url>http://stamina.io/${project.artifactId}</url>
+    <url>http://stamina.io/docs/${project.artifactId}</url>
 
     <dependencies>
         <dependency>

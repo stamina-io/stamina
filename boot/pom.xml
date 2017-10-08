@@ -16,7 +16,7 @@
     </parent>
     <name>Stamina Boot</name>
     <artifactId>io.stamina.boot</artifactId>
-    <url>http://stamina.io/${project.artifactId}</url>
+    <url>http://stamina.io/docs/${project.artifactId}</url>
 
     <dependencies>
         <dependency>
