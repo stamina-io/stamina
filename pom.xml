@@ -62,6 +62,11 @@
                 <artifactId>org.apache.felix.fileinstall</artifactId>
                 <version>3.6.2</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.framework</artifactId>
+                <version>5.6.8</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -123,5 +128,6 @@
         <module>dist</module>
         <module>subsystem</module>
         <module>starter</module>
+        <module>it</module>
     </modules>
 </project>
