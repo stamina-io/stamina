@@ -16,11 +16,7 @@
     </parent>
     <name>Stamina Boot</name>
     <artifactId>io.stamina.boot</artifactId>
-
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
+    <url>http://stamina.io/${project.artifactId}</url>
 
     <dependencies>
         <dependency>

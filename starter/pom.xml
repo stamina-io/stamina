@@ -16,6 +16,7 @@
     </parent>
     <name>Stamina Starter</name>
     <artifactId>io.stamina.starter</artifactId>
+    <url>http://stamina.io/${project.artifactId}</url>
 
     <description>
         Use this project to automatically set up dependencies

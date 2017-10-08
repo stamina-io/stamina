@@ -16,6 +16,7 @@
     </parent>
     <name>Stamina Command</name>
     <artifactId>io.stamina.command</artifactId>
+    <url>http://stamina.io/${project.artifactId}</url>
 
     <dependencies>
         <dependency>
