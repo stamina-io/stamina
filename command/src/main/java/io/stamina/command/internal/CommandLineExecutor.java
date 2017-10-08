@@ -37,6 +37,7 @@ public class CommandLineExecutor {
     @Reference
     private CommandLine commandLine;
     private ServiceTracker<Command, Command> commandTracker;
+    private Thread executor;
 
     @Activate
     public void activate(BundleContext ctx, Config config) throws InvalidSyntaxException {
@@ -47,7 +48,8 @@ public class CommandLineExecutor {
 
         // Start a new thread handling command execution.
         final Bundle systemBundle = ctx.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
-        new CommandExecutorThread(config.timeout(), commandLine, commandTracker, systemBundle, logService).start();
+        executor = new CommandExecutorThread(config.timeout(), commandLine, commandTracker, systemBundle, logService);
+        executor.start();
     }
 
     @Deactivate
@@ -56,6 +58,13 @@ public class CommandLineExecutor {
             // Closing ServiceTracker should be enough to "unlock" command executor thread.
             commandTracker.close();
             commandTracker = null;
+        }
+        if (executor != null) {
+            try {
+                executor.join(10000);
+            } catch (InterruptedException e) {
+            }
+            executor = null;
         }
     }
 

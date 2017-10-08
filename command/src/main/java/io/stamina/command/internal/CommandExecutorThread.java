@@ -46,7 +46,9 @@ class CommandExecutorThread extends Thread {
                 try {
                     // Got one command: let's go!
                     logService.log(LogService.LOG_INFO, "Executing command-line: $ " + commandLine);
-                    cmd.execute(commandLine.arguments(), System.in, System.out, System.err);
+                    final CommandContext ctx = new CommandContext(commandLine.arguments(), commandLine.workingDirectory(),
+                            System.in, System.out, System.err);
+                    cmd.execute(ctx);
                 } catch (Exception e) {
                     logService.log(LogService.LOG_ERROR, "Command execution failed", e);
                 } finally {

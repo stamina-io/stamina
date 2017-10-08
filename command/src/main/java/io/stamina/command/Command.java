@@ -27,11 +27,48 @@ public interface Command {
     /**
      * Execute this command.
      *
-     * @param arguments command arguments, empty if none
-     * @param in        command input stream
-     * @param out       command output stream
-     * @param err       command error stream
+     * @param context command context
      * @throws Exception if command execution failed
      */
-    void execute(String[] arguments, InputStream in, PrintStream out, PrintStream err) throws Exception;
+    void execute(Context context) throws Exception;
+
+    /**
+     * Command context interface.
+     */
+    interface Context {
+        /**
+         * Get command arguments.
+         *
+         * @return command arguments, empty if none
+         */
+        String[] arguments();
+
+        /**
+         * Get working directory.
+         *
+         * @return working directory
+         */
+        String workingDirectory();
+
+        /**
+         * Get command input.
+         *
+         * @return command input
+         */
+        InputStream in();
+
+        /**
+         * Get command output.
+         *
+         * @return command output
+         */
+        PrintStream out();
+
+        /**
+         * Get command error output.
+         *
+         * @return command error output
+         */
+        PrintStream err();
+    }
 }

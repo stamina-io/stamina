@@ -11,7 +11,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
-import java.io.InputStream;
 import java.io.PrintStream;
 
 /**
@@ -29,8 +28,8 @@ public class VersionCommand implements Command {
     }
 
     @Override
-    public void execute(String[] arguments, InputStream in, PrintStream out, PrintStream err) throws Exception {
-        out.println(version);
+    public void execute(Context ctx) throws Exception {
+        ctx.out().println(version);
     }
 
     @Override

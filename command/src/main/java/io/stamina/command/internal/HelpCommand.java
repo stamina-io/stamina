@@ -13,7 +13,6 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,8 +45,8 @@ public class HelpCommand implements Command {
     }
 
     @Override
-    public void execute(String[] arguments, InputStream in, PrintStream out, PrintStream err) throws Exception {
-        final String cmdName = arguments.length == 0 ? null : arguments[0];
+    public void execute(Context ctx) throws Exception {
+        final String cmdName = ctx.arguments().length == 0 ? null : ctx.arguments()[0];
         if (cmdName == null) {
             final Collection<ServiceReference<Command>> commandRefs =
                     bundleContext.getServiceReferences(Command.class, null);
@@ -58,21 +57,21 @@ public class HelpCommand implements Command {
                     commandNames.add((String) rawCommandName);
                 }
             }
-            out.println("Available commands:");
-            commandNames.stream().sorted().forEach(out::println);
+            ctx.out().println("Available commands:");
+            commandNames.stream().sorted().forEach(ctx.out()::println);
         } else {
             final Collection<ServiceReference<Command>> refs =
                     bundleContext.getServiceReferences(Command.class, "(" + CommandConstants.COMMAND_PROPERTY + "=" + cmdName + ")");
             if (refs.isEmpty()) {
-                err.println("Command not found: " + cmdName);
+                ctx.err().println("Command not found: " + cmdName);
             } else {
                 if (refs.size() > 1) {
-                    err.println("More than one command found: showing first");
+                    ctx.err().println("More than one command found: showing first");
                 }
                 final ServiceReference<Command> ref = refs.iterator().next();
                 try {
                     final Command cmd = bundleContext.getService(ref);
-                    cmd.help(out);
+                    cmd.help(ctx.out());
                 } finally {
                     bundleContext.ungetService(ref);
                 }
