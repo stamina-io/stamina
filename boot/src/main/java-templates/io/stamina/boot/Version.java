@@ -5,11 +5,14 @@
 
 package io.stamina.boot;
 
+import javax.annotation.Generated;
+
 /**
  * Application version informations.
  *
  * @author Stamina.io developers
  */
+@Generated("stamina.io")
 public final class Version {
     /**
      * Application build.
