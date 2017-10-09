@@ -16,7 +16,7 @@ import static org.ops4j.pax.exam.CoreOptions.*;
 /**
  * Test helper.
  *
- * @author Stamina developers
+ * @author Stamina.io developers
  */
 public final class TestHelper {
     private TestHelper() {

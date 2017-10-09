@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Command printing help about an other command.
  *
- * @author Stamina developers
+ * @author Stamina.io developers
  */
 @Component(service = Command.class, property = CommandConstants.COMMAND_PROPERTY + "=help")
 public class HelpCommand implements Command {

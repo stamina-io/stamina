@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 /**
  * URL handler for loading bundles through the system repository.
  *
- * @author Stamina developers
+ * @author Stamina.io developers
  */
 class SystemURLStreamHandlerService extends AbstractURLStreamHandlerService {
     private final Map<String, URL> bundlesBySymbolicName;

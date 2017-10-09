@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 /**
  * {@link Logger} implementation, using <code>System.err</code> to log entries.
  *
- * @author Stamina developers
+ * @author Stamina.io developers
  */
 public class ConsoleLogger implements Logger {
     public static final int DEBUG_LEVEL = 0;

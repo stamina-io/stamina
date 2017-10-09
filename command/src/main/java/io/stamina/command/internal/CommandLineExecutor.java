@@ -19,7 +19,7 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * {@link io.stamina.boot.helper.CommandLine} executor component.
  *
- * @author Stamina developers
+ * @author Stamina.io developers
  */
 @Component(configurationPid = "io.stamina.command")
 public class CommandLineExecutor {

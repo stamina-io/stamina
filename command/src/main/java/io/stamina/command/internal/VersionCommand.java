@@ -16,7 +16,7 @@ import java.io.PrintStream;
 /**
  * Command displaying platform version.
  *
- * @author Stamina developers
+ * @author Stamina.io developers
  */
 @Component(service = Command.class, property = CommandConstants.COMMAND_PROPERTY + "=version")
 public class VersionCommand implements Command {

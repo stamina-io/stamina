@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 /**
  * Application logger.
  *
- * @author Stamina developers
+ * @author Stamina.io developers
  */
 public interface Logger {
     /**

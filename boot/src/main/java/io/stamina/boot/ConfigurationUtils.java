@@ -17,7 +17,7 @@ import java.util.StringTokenizer;
 /**
  * Configuration utilities.
  *
- * @author Stamina developers
+ * @author Stamina.io developers
  */
 final class ConfigurationUtils {
     private ConfigurationUtils() {

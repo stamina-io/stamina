@@ -10,7 +10,7 @@ import io.stamina.boot.helper.CommandLine;
 /**
  * {@link io.stamina.boot.helper.CommandLine} internal implementation.
  *
- * @author Stamina developers
+ * @author Stamina.io developers
  */
 class CommandLineImpl implements CommandLine {
     private final String command;

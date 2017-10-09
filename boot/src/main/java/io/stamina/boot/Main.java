@@ -27,7 +27,7 @@ import java.util.*;
 /**
  * Application entry point.
  *
- * @author Stamina developers
+ * @author Stamina.io developers
  */
 public class Main {
     private static Framework fmk;

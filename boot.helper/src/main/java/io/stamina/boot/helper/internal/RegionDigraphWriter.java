@@ -23,7 +23,7 @@ import java.io.OutputStream;
  * This component is a fix for Eclipse Region: the digraph is not written
  * when the bundle stops, causing an error on restart.
  *
- * @author Stamina developers
+ * @author Stamina.io developers
  */
 @Component
 public class RegionDigraphWriter {

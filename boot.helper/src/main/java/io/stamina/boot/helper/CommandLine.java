@@ -21,7 +21,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * <li>arguments: <code>[ "hello:greetings" ]</code></li>
  * </ul>
  *
- * @author Stamina developers
+ * @author Stamina.io developers
  */
 @ProviderType
 public interface CommandLine {

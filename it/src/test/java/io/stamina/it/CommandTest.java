@@ -36,7 +36,7 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 /**
  * Integration tests for bundle <code>io.stamina.command</code>.
  *
- * @author Stamina developers
+ * @author Stamina.io developers
  */
 @RunWith(PaxExam.class)
 public class CommandTest {

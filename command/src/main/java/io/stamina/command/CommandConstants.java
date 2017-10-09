@@ -8,7 +8,7 @@ package io.stamina.command;
 /**
  * Bundle constants.
  *
- * @author Stamina developers
+ * @author Stamina.io developers
  */
 public final class CommandConstants {
     /**

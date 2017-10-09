@@ -26,7 +26,7 @@ import java.util.zip.ZipFile;
 /**
  * OSGi Subsystem installer.
  *
- * @author Stamina developers
+ * @author Stamina.io developers
  */
 @Component(service = ArtifactInstaller.class, immediate = true)
 public class SubsystemInstaller implements ArtifactInstaller {

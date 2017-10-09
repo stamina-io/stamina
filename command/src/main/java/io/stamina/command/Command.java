@@ -13,7 +13,7 @@ import java.io.PrintStream;
 /**
  * Command service interface.
  *
- * @author Stamina developers
+ * @author Stamina.io developers
  */
 @ConsumerType
 public interface Command {

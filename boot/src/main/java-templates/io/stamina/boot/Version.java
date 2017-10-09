@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Stamina developers.
+ * Copyright (c) 2017 Stamina.io developers.
  * All rights reserved.
  */
 
@@ -8,7 +8,7 @@ package io.stamina.boot;
 /**
  * Application version informations.
  *
- * @author Stamina developers
+ * @author Stamina.io developers
  */
 public final class Version {
     /**
