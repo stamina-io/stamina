@@ -1,0 +1,2 @@
+Export-Package: io.stamina.starter.it
+Import-Package: org.osgi.service.subsystem;resolution:=optional, *

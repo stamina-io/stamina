@@ -27,10 +27,8 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.Constants;
 
 import javax.inject.Inject;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
@@ -38,11 +36,12 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import static io.stamina.it.TestHelper.lookupBundle;
-import static io.stamina.it.TestHelper.options;
+import static io.stamina.starter.it.StaminaOptions.staminaDistribution;
+import static java.lang.Thread.sleep;
 import static org.junit.Assert.*;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.options;
 
 /**
  * Integration tests for bundle <code>io.stamina.command</code>.
@@ -53,20 +52,17 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 public class CommandTest {
     @Inject
     private BundleContext bundleContext;
-    private boolean executed;
 
     @Configuration
     public Option[] config() {
         return options(
-                mavenBundle("io.stamina", "io.stamina.boot.helper").versionAsInProject().noStart(),
-                mavenBundle("io.stamina", "io.stamina.command").versionAsInProject()
+                staminaDistribution()
         );
     }
 
     @Test
-    public void testExecuteNoCommand() throws BundleException {
-        final File f = bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION).getDataFile("exec");
-        assertFalse(f.exists());
+    public void testExecuteNoCommandLine() throws BundleException, InterruptedException {
+        final AtomicBoolean executed = new AtomicBoolean(false);
 
         final Command cmd = new Command() {
             @Override
@@ -75,14 +71,14 @@ public class CommandTest {
 
             @Override
             public void execute(Context ctx) throws Exception {
-                f.createNewFile();
+                executed.set(true);
             }
         };
         final Dictionary<String, Object> cmdProps = new Hashtable<>(1);
         cmdProps.put(CommandConstants.COMMAND_PROPERTY, "test");
         bundleContext.registerService(Command.class, cmd, cmdProps);
-        lookupBundle(bundleContext, "io.stamina.boot.helper").start();
-        assertFalse(f.exists());
+        sleep(250);
+        assertFalse(executed.get());
     }
 
     @Test
@@ -118,7 +114,7 @@ public class CommandTest {
             public void execute(Context ctx) throws Exception {
                 if (ctx.arguments().length == 1 && "123".equals(ctx.arguments()[0])) {
                     Files.write(p, Collections.singletonList("executed"));
-                    Thread.sleep(250);
+                    sleep(250);
                 }
             }
         };

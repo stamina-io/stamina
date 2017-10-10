@@ -20,6 +20,7 @@ import io.stamina.boot.helper.CommandLine;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
+import org.ops4j.pax.exam.CoreOptions;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.osgi.framework.Bundle;
@@ -33,8 +34,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static io.stamina.it.TestHelper.*;
+import static io.stamina.starter.it.OsgiHelper.lookupBundle;
+import static io.stamina.starter.it.OsgiHelper.lookupService;
 import static org.junit.Assert.*;
+import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 
 /**
@@ -49,9 +52,15 @@ public class BootHelperTest {
 
     @Configuration
     public Option[] config() {
-        return options(
-                mavenBundle("io.stamina", "io.stamina.boot.helper").versionAsInProject().noStart()
-                );
+        return CoreOptions.options(
+                mavenBundle("io.stamina", "io.stamina.starter.it").versionAsInProject(),
+                mavenBundle("io.stamina", "io.stamina.boot.helper").versionAsInProject().noStart(),
+                mavenBundle("org.apache.felix", "org.apache.felix.log").versionAsInProject(),
+                mavenBundle("org.everit.osgi", "org.everit.osgi.loglistener.slf4j").versionAsInProject(),
+                mavenBundle("org.apache.felix", "org.apache.felix.scr").versionAsInProject(),
+                mavenBundle("org.eclipse.equinox", "org.eclipse.equinox.region").versionAsInProject(),
+                junitBundles()
+        );
     }
 
     @Test
