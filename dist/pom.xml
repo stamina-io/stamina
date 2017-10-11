@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) 2017 Stamina.io developers.
+  ~ Copyright (c) 2017 Stamina Framework developers.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -21,33 +21,33 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.stamina</groupId>
+        <groupId>io.staminaframework</groupId>
         <artifactId>parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
     <name>Stamina Distribution</name>
-    <artifactId>io.stamina.dist</artifactId>
+    <artifactId>io.staminaframework.dist</artifactId>
     <packaging>pom</packaging>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>io.stamina.boot</artifactId>
+            <artifactId>io.staminaframework.boot</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>io.stamina.boot.helper</artifactId>
+            <artifactId>io.staminaframework.boot.helper</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>io.stamina.command</artifactId>
+            <artifactId>io.staminaframework.command</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>io.stamina.subsystem</artifactId>
+            <artifactId>io.staminaframework.subsystem</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -136,7 +136,7 @@
                         <configuration>
                             <outputDirectory>${project.build.directory}/sys-repo</outputDirectory>
                             <excludeArtifactIds>
-                                io.stamina.boot,
+                                io.staminaframework.boot,
                                 org.apache.felix.framework
                             </excludeArtifactIds>
                             <useRepositoryLayout>true</useRepositoryLayout>

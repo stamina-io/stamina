@@ -1,2 +1,1 @@
-Bundle-SymbolicName: io.stamina.command
-Export-Package: io.stamina.command
+Export-Package: io.staminaframework.command

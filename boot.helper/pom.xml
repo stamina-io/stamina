@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) 2017 Stamina.io developers.
+  ~ Copyright (c) 2017 Stamina Framework developers.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -21,13 +21,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.stamina</groupId>
+        <groupId>io.staminaframework</groupId>
         <artifactId>parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
     <name>Stamina Boot Helper</name>
-    <artifactId>io.stamina.boot.helper</artifactId>
-    <url>http://stamina.io/docs/${project.artifactId}</url>
+    <artifactId>io.staminaframework.boot.helper</artifactId>
+    <url>http://staminaframework.io/${project.artifactId}</url>
 
     <dependencies>
         <dependency>
@@ -49,7 +49,6 @@
         <dependency>
             <groupId>org.eclipse.equinox</groupId>
             <artifactId>org.eclipse.equinox.region</artifactId>
-            <version>1.2.101.v20150831-1342</version>
         </dependency>
     </dependencies>
 

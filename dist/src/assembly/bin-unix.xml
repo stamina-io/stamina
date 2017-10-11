@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2017 Stamina.io developers.
+  ~ Copyright (c) 2017 Stamina Framework developers.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
             <useProjectArtifact>false</useProjectArtifact>
             <outputDirectory>lib</outputDirectory>
             <includes>
-                <include>*:io.stamina.boot</include>
+                <include>*:io.staminaframework.boot</include>
                 <include>*:org.apache.felix.framework</include>
             </includes>
         </dependencySet>

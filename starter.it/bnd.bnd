@@ -1,2 +1,2 @@
-Export-Package: io.stamina.starter.it
+Export-Package: io.staminaframework.starter.it
 Import-Package: org.osgi.service.subsystem;resolution:=optional, *

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) 2017 Stamina.io developers.
+  ~ Copyright (c) 2017 Stamina Framework developers.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -21,13 +21,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.stamina</groupId>
+        <groupId>io.staminaframework</groupId>
         <artifactId>parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
     <name>Stamina Boot</name>
-    <artifactId>io.stamina.boot</artifactId>
-    <url>http://stamina.io/docs/${project.artifactId}</url>
+    <artifactId>io.staminaframework.boot</artifactId>
+    <url>http://staminaframework.io/${project.artifactId}</url>
 
     <dependencies>
         <dependency>
@@ -66,11 +66,11 @@
                     <relocations>
                         <relocation>
                             <pattern>org.apache.felix.utils.properties</pattern>
-                            <shadedPattern>io.stamina.boot.properties</shadedPattern>
+                            <shadedPattern>io.staminaframework.boot.properties</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.apache.felix.utils.manifest</pattern>
-                            <shadedPattern>io.stamina.boot.manifest</shadedPattern>
+                            <shadedPattern>io.staminaframework.boot.manifest</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -132,7 +132,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>io.stamina.boot.Main</mainClass>
+                            <mainClass>io.staminaframework.boot.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

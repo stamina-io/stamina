@@ -1,2 +1,1 @@
-Bundle-SymbolicName: io.stamina.boot.helper
-Export-Package: io.stamina.boot.helper
+Export-Package: io.staminaframework.boot.helper
