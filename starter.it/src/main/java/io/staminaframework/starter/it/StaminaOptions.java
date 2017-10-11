@@ -43,7 +43,7 @@ public final class StaminaOptions {
                 mavenBundle("io.staminaframework", "io.staminaframework.starter.it").versionAsInProject(),
                 mavenBundle("org.apache.felix", "org.apache.felix.log").versionAsInProject(),
                 mavenBundle("org.everit.osgi", "org.everit.osgi.loglistener.slf4j").versionAsInProject(),
-                mavenBundle("io.staminaframework", "io.staminaframework.boot.helper").versionAsInProject(),
+                mavenBundle("io.staminaframework", "io.staminaframework.boot").versionAsInProject(),
                 mavenBundle("io.staminaframework", "io.staminaframework.command").versionAsInProject(),
                 mavenBundle("org.apache.felix", "org.apache.felix.configadmin").versionAsInProject(),
                 mavenBundle("org.apache.felix", "org.apache.felix.fileinstall").versionAsInProject(),

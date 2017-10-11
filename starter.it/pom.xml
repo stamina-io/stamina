@@ -159,7 +159,7 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>io.staminaframework.boot.helper</artifactId>
+            <artifactId>io.staminaframework.boot</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

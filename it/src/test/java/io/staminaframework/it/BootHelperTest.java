@@ -16,7 +16,7 @@
 
 package io.staminaframework.it;
 
-import io.staminaframework.boot.helper.CommandLine;
+import io.staminaframework.boot.CommandLine;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
@@ -54,7 +54,7 @@ public class BootHelperTest {
     public Option[] config() {
         return CoreOptions.options(
                 mavenBundle("io.staminaframework", "io.staminaframework.starter.it").versionAsInProject(),
-                mavenBundle("io.staminaframework", "io.staminaframework.boot.helper").versionAsInProject().noStart(),
+                mavenBundle("io.staminaframework", "io.staminaframework.boot").versionAsInProject().noStart(),
                 mavenBundle("org.apache.felix", "org.apache.felix.log").versionAsInProject(),
                 mavenBundle("org.everit.osgi", "org.everit.osgi.loglistener.slf4j").versionAsInProject(),
                 mavenBundle("org.apache.felix", "org.apache.felix.scr").versionAsInProject(),
@@ -68,13 +68,13 @@ public class BootHelperTest {
         final Bundle regionBundle = bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
         final File digraphFile = regionBundle.getDataFile("digraph");
         assertFalse(digraphFile.exists());
-        lookupBundle(bundleContext, "io.staminaframework.boot.helper").start();
+        lookupBundle(bundleContext, "io.staminaframework.boot").start();
         assertTrue(digraphFile.exists());
     }
 
     @Test
     public void testCommandLine() throws IOException, BundleException {
-        final Bundle bootHelperBundle = lookupBundle(bundleContext, "io.staminaframework.boot.helper");
+        final Bundle bootHelperBundle = lookupBundle(bundleContext, "io.staminaframework.boot");
         final File cmdFile = bootHelperBundle.getDataFile("cmd.dat");
         try (final DataOutputStream out = new DataOutputStream(new FileOutputStream(cmdFile))) {
             out.writeUTF("hello");
@@ -82,7 +82,7 @@ public class BootHelperTest {
             out.writeUTF("mr");
             out.writeUTF("bond");
         }
-        lookupBundle(bundleContext, "io.staminaframework.boot.helper").start();
+        lookupBundle(bundleContext, "io.staminaframework.boot").start();
 
         final CommandLine cmd = lookupService(bundleContext, CommandLine.class);
         assertEquals("hello", cmd.command());
@@ -91,7 +91,7 @@ public class BootHelperTest {
 
     @Test
     public void testNoCommandLine() throws BundleException {
-        lookupBundle(bundleContext, "io.staminaframework.boot.helper").start();
+        lookupBundle(bundleContext, "io.staminaframework.boot").start();
         assertNull(bundleContext.getServiceReference(CommandLine.class));
     }
 }

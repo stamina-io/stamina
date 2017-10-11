@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+# Copyright (c) 2017 Stamina Framework developers.
+# All rights reserved.
+#
+
+STAMINA_HOME=$(dirname "$0")/..
+
+# Run the next command in your shell to enable remote debug.
+# export STAMINA_OPTS=-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000
+
+JAVA_CMD="$STAMINA_HOME/jre/bin/java"
+if [ ! -e "$JAVA_CMD" ]; then
+    JAVA_CMD="java"
+fi
+
+"$JAVA_CMD" $STAMINA_OPTS \
+    "-Dstamina.home=$STAMINA_HOME" \
+    "-Djava.util.logging.config.file=$STAMINA_HOME/etc/java.util.logging.properties" \
+    -cp "$STAMINA_HOME/lib/*" \
+    io.staminaframework.launcher.Main \
+    $*

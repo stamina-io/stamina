@@ -16,7 +16,7 @@
 
 package io.staminaframework.command.internal;
 
-import io.staminaframework.boot.helper.CommandLine;
+import io.staminaframework.boot.CommandLine;
 import io.staminaframework.command.Command;
 import io.staminaframework.command.CommandConstants;
 import org.osgi.framework.*;
