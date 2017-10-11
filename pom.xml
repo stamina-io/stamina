@@ -38,8 +38,8 @@
     </licenses>
 
     <scm>
-        <url>http://github.com/stamina-io/stamina</url>
-        <connection>scm:git:https://github.com/stamina-io/stamina.git</connection>
+        <url>http://github.com/staminaframework/stamina</url>
+        <connection>scm:git:https://github.com/staminaframework/stamina.git</connection>
     </scm>
 
     <properties>
@@ -223,17 +223,6 @@
         </pluginManagement>
     </build>
 
-    <modules>
-        <module>launcher</module>
-        <module>boot</module>
-        <module>command</module>
-        <module>runtime</module>
-        <module>subsystem</module>
-        <module>starter</module>
-        <module>starter.it</module>
-        <module>it</module>
-    </modules>
-
     <distributionManagement>
         <repository>
             <id>stamina</id>
@@ -244,4 +233,15 @@
             <url>${env.STAMINA_REPO_SNAPSHOTS}</url>
         </snapshotRepository>
     </distributionManagement>
+
+    <modules>
+        <module>launcher</module>
+        <module>boot</module>
+        <module>command</module>
+        <module>runtime</module>
+        <module>subsystem</module>
+        <module>starter</module>
+        <module>starter.it</module>
+        <module>it</module>
+    </modules>
 </project>
