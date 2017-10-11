@@ -46,7 +46,7 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
  * @author Stamina Framework developers
  */
 @RunWith(PaxExam.class)
-public class BootHelperTest {
+public class BootHelperIT {
     @Inject
     private BundleContext bundleContext;
 

@@ -49,7 +49,7 @@ import static org.ops4j.pax.exam.CoreOptions.options;
  * @author Stamina Framework developers
  */
 @RunWith(PaxExam.class)
-public class CommandTest {
+public class CommandIT {
     @Inject
     private BundleContext bundleContext;
 
