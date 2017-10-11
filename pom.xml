@@ -233,4 +233,15 @@
         <module>starter.it</module>
         <module>it</module>
     </modules>
+
+    <distributionManagement>
+        <repository>
+            <id>stamina</id>
+            <url>${env.STAMINA_REPO_RELEASES}</url>
+        </repository>
+        <snapshotRepository>
+            <id>stamina-snapshots</id>
+            <url>${env.STAMINA_REPO_SNAPSHOTS}</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
