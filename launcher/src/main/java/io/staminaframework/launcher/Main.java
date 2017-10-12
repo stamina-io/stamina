@@ -78,7 +78,7 @@ public class Main {
                 ConfigurationUtils.loadConfiguration(new File(confDir, "framework.properties"), null);
         fmkConf.putAll(fmkArgs);
 
-        final Logger logger = setupLogging(fmkConf, cmd != null && !"clean".equals(cmd));
+        final Logger logger = setupLogging(fmkConf, cmd != null);
         logger.info(() -> "Stamina " + Version.VERSION + " build " + Version.BUILD);
         logger.debug(() -> "Home directory: " + homeDir);
         logger.debug(() -> "Framework configuration: " + sortMap(fmkConf));
@@ -99,7 +99,7 @@ public class Main {
 
         // Clean-up data directory if needed.
         final File dataDir = new File(fmkConf.get("stamina.data"));
-        if (dataDir.exists() && "clean".equals(cmd)) {
+        if (dataDir.exists() && "true".equals(fmkConf.get("stamina.data.clean"))) {
             logger.info(() -> "Cleaning data directory: " + dataDir);
             deleteDir(dataDir);
         }
@@ -224,7 +224,7 @@ public class Main {
                 bootBundleFound = true;
                 final File cmdFile = b.getDataFile("cmd.dat");
                 cmdFile.getParentFile().mkdirs();
-                if (cmd != null && !"clean".equals(cmd)) {
+                if (cmd != null) {
                     try (final DataOutputStream out = new DataOutputStream(new FileOutputStream(cmdFile))) {
                         out.writeUTF(cmd);
                         out.writeInt(cmdArgs.size());
