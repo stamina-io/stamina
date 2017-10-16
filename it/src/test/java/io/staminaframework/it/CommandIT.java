@@ -44,7 +44,7 @@ import static org.junit.Assert.*;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
 /**
- * Integration tests for bundle <code>io.stamina.command</code>.
+ * Integration tests for bundle <code>io.staminaframework.command</code>.
  *
  * @author Stamina Framework developers
  */

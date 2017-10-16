@@ -41,7 +41,7 @@ import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 
 /**
- * Integration tests for bundle <code>io.stamina.boot.helper</code>.
+ * Integration tests for bundle <code>io.staminaframework.boot.helper</code>.
  *
  * @author Stamina Framework developers
  */

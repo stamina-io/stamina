@@ -38,7 +38,7 @@ import static io.staminaframework.starter.it.StaminaOptions.staminaDistribution;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
 /**
- * Integration tests for bundle <code>io.stamina.subsytem</code>.
+ * Integration tests for bundle <code>io.staminaframework.subsytem</code>.
  *
  * @author Stamina Framework developers
  */
