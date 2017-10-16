@@ -53,6 +53,13 @@
                             <goal>integration-test</goal>
                             <goal>verify</goal>
                         </goals>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <logback.configurationFile>${project.basedir}/src/test/resources/logback-test.xml</logback.configurationFile>
+                                <org.ops4j.pax.logging.DefaultServiceLog.level>ERROR</org.ops4j.pax.logging.DefaultServiceLog.level>
+                            </systemPropertyVariables>
+                            <reuseForks>false</reuseForks>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -64,6 +71,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>io.staminaframework.starter.it</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- This bundle is used by Subsystem tests -->

@@ -17,6 +17,8 @@
 package io.staminaframework.it;
 
 import io.staminaframework.boot.CommandLine;
+import org.apache.felix.framework.util.FelixConstants;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
@@ -37,6 +39,7 @@ import java.io.IOException;
 import static io.staminaframework.starter.it.OsgiHelper.lookupBundle;
 import static io.staminaframework.starter.it.OsgiHelper.lookupService;
 import static org.junit.Assert.*;
+import static org.ops4j.pax.exam.CoreOptions.frameworkProperty;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 
@@ -53,12 +56,17 @@ public class BootHelperIT {
     @Configuration
     public Option[] config() {
         return CoreOptions.options(
+                mavenBundle("org.slf4j", "slf4j-api").versionAsInProject().startLevel(1),
+                mavenBundle("ch.qos.logback", "logback-core").versionAsInProject().startLevel(1),
+                mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject().startLevel(1),
+                mavenBundle("org.apache.felix", "org.apache.felix.log").versionAsInProject().startLevel(1),
+                mavenBundle("org.everit.osgi", "org.everit.osgi.loglistener.slf4j").versionAsInProject().startLevel(1),
                 mavenBundle("io.staminaframework", "io.staminaframework.starter.it").versionAsInProject(),
                 mavenBundle("io.staminaframework", "io.staminaframework.boot").versionAsInProject().noStart(),
-                mavenBundle("org.apache.felix", "org.apache.felix.log").versionAsInProject(),
-                mavenBundle("org.everit.osgi", "org.everit.osgi.loglistener.slf4j").versionAsInProject(),
                 mavenBundle("org.apache.felix", "org.apache.felix.scr").versionAsInProject(),
                 mavenBundle("org.eclipse.equinox", "org.eclipse.equinox.region").versionAsInProject(),
+                frameworkProperty(Constants.FRAMEWORK_BEGINNING_STARTLEVEL).value("100"),
+                frameworkProperty(FelixConstants.BUNDLE_STARTLEVEL_PROP).value("80"),
                 junitBundles()
         );
     }

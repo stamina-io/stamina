@@ -16,11 +16,12 @@
 
 package io.staminaframework.starter.it;
 
+import org.apache.felix.framework.util.FelixConstants;
 import org.ops4j.pax.exam.CoreOptions;
 import org.ops4j.pax.exam.Option;
+import org.osgi.framework.Constants;
 
-import static org.ops4j.pax.exam.CoreOptions.junitBundles;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.*;
 
 /**
  * Helper class providing Pax-Exam {@link org.ops4j.pax.exam.Option} instances
@@ -39,10 +40,12 @@ public final class StaminaOptions {
      */
     public static Option staminaDistribution() {
         return CoreOptions.composite(
-                junitBundles(),
+                mavenBundle("org.slf4j", "slf4j-api").versionAsInProject().startLevel(1),
+                mavenBundle("ch.qos.logback", "logback-core").versionAsInProject().startLevel(1),
+                mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject().startLevel(1),
+                mavenBundle("org.apache.felix", "org.apache.felix.log").versionAsInProject().startLevel(1),
+                mavenBundle("org.everit.osgi", "org.everit.osgi.loglistener.slf4j").versionAsInProject().startLevel(1),
                 mavenBundle("io.staminaframework", "io.staminaframework.starter.it").versionAsInProject(),
-                mavenBundle("org.apache.felix", "org.apache.felix.log").versionAsInProject(),
-                mavenBundle("org.everit.osgi", "org.everit.osgi.loglistener.slf4j").versionAsInProject(),
                 mavenBundle("io.staminaframework", "io.staminaframework.boot").versionAsInProject(),
                 mavenBundle("io.staminaframework", "io.staminaframework.command").versionAsInProject(),
                 mavenBundle("org.apache.felix", "org.apache.felix.configadmin").versionAsInProject(),
@@ -56,7 +59,11 @@ public final class StaminaOptions {
                 mavenBundle("org.apache.aries", "org.apache.aries.util").versionAsInProject(),
                 mavenBundle("org.eclipse.equinox", "org.eclipse.equinox.region").versionAsInProject(),
                 mavenBundle("org.apache.aries.subsystem", "org.apache.aries.subsystem").versionAsInProject(),
-                mavenBundle("io.staminaframework", "io.staminaframework.subsystem").versionAsInProject()
+                mavenBundle("io.staminaframework", "io.staminaframework.subsystem").versionAsInProject(),
+                frameworkProperty(Constants.FRAMEWORK_BEGINNING_STARTLEVEL).value("100"),
+                frameworkProperty(FelixConstants.BUNDLE_STARTLEVEL_PROP).value("80"),
+                //frameworkProperty(Constants.FRAMEWORK_BUNDLE_PARENT_BOOT).value(Constants.FRAMEWORK_BUNDLE_PARENT_FRAMEWORK),
+                junitBundles()
         );
     }
 }
