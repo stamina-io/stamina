@@ -54,14 +54,15 @@ class CommandExecutorThread extends Thread {
             logService.log(LogService.LOG_INFO, "Waiting for command: " + commandLine.command());
             final Command cmd = commandTracker.waitForService(TimeUnit.SECONDS.toMillis(commandTimeout));
             if (cmd != null) {
+                final CommandContext ctx = new CommandContext(commandLine.arguments(), commandLine.workingDirectory(),
+                        System.in, System.out, System.err);
                 try {
                     // Got one command: let's go!
                     logService.log(LogService.LOG_INFO, "Executing command-line: $ " + commandLine);
-                    final CommandContext ctx = new CommandContext(commandLine.arguments(), commandLine.workingDirectory(),
-                            System.in, System.out, System.err);
                     cmd.execute(ctx);
                 } catch (Exception e) {
-                    logService.log(LogService.LOG_ERROR, "Command execution failed", e);
+                    logService.log(LogService.LOG_WARNING, "Command execution failed", e);
+                    ctx.err().println(e.getMessage());
                 } finally {
                     // Stop framework after command execution.
                     stopFramework();
