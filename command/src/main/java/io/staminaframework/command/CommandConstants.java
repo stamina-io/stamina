@@ -25,7 +25,7 @@ public final class CommandConstants {
     /**
      * Service property identifying command name (as a {@link String}).
      */
-    public static final String COMMAND_PROPERTY = "command";
+    public static final String COMMAND = "command";
 
     private CommandConstants() {
     }

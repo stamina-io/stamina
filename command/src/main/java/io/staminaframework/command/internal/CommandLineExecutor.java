@@ -53,7 +53,7 @@ public class CommandLineExecutor {
     @Activate
     public void activate(BundleContext ctx, Config config) throws InvalidSyntaxException {
         final Filter filter = ctx.createFilter("(&(" + Constants.OBJECTCLASS + "=" + Command.class.getName()
-                + ")(" + CommandConstants.COMMAND_PROPERTY + "=" + commandLine.command() + "))");
+                + ")(" + CommandConstants.COMMAND + "=" + commandLine.command() + "))");
         commandTracker = new ServiceTracker<>(ctx, filter, null);
         commandTracker.open();
 

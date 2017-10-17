@@ -29,7 +29,7 @@ import java.io.PrintStream;
  *
  * @author Stamina Framework developers
  */
-@Component(service = Command.class, property = CommandConstants.COMMAND_PROPERTY + "=version")
+@Component(service = Command.class, property = CommandConstants.COMMAND + "=version")
 public class VersionCommand implements Command {
     private String version;
 

@@ -75,7 +75,7 @@ public class CommandIT {
             }
         };
         final Dictionary<String, Object> cmdProps = new Hashtable<>(1);
-        cmdProps.put(CommandConstants.COMMAND_PROPERTY, "test");
+        cmdProps.put(CommandConstants.COMMAND, "test");
         bundleContext.registerService(Command.class, cmd, cmdProps);
         sleep(250);
         assertFalse(executed.get());
@@ -119,7 +119,7 @@ public class CommandIT {
             }
         };
         final Dictionary<String, Object> cmdProps = new Hashtable<>(1);
-        cmdProps.put(CommandConstants.COMMAND_PROPERTY, "test");
+        cmdProps.put(CommandConstants.COMMAND, "test");
         bundleContext.registerService(Command.class, cmd, cmdProps);
         assertNotEquals(0, p.toFile().length());
     }

@@ -34,7 +34,7 @@ import java.util.List;
  *
  * @author Stamina Framework developers
  */
-@Component(service = Command.class, property = CommandConstants.COMMAND_PROPERTY + "=help")
+@Component(service = Command.class, property = CommandConstants.COMMAND + "=help")
 public class HelpCommand implements Command {
     private BundleContext bundleContext;
 
@@ -63,7 +63,7 @@ public class HelpCommand implements Command {
                     bundleContext.getServiceReferences(Command.class, null);
             final List<String> commandNames = new ArrayList<>(commandRefs.size());
             for (final ServiceReference<Command> ref : commandRefs) {
-                final Object rawCommandName = ref.getProperty(CommandConstants.COMMAND_PROPERTY);
+                final Object rawCommandName = ref.getProperty(CommandConstants.COMMAND);
                 if (rawCommandName != null && rawCommandName instanceof String) {
                     commandNames.add((String) rawCommandName);
                 }
@@ -72,7 +72,7 @@ public class HelpCommand implements Command {
             commandNames.stream().sorted().forEach(ctx.out()::println);
         } else {
             final Collection<ServiceReference<Command>> refs =
-                    bundleContext.getServiceReferences(Command.class, "(" + CommandConstants.COMMAND_PROPERTY + "=" + cmdName + ")");
+                    bundleContext.getServiceReferences(Command.class, "(" + CommandConstants.COMMAND + "=" + cmdName + ")");
             if (refs.isEmpty()) {
                 ctx.err().println("Command not found: " + cmdName);
             } else {
