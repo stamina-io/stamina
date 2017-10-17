@@ -1,2 +1,2 @@
 Export-Package: io.staminaframework.starter.it
-Import-Package: org.osgi.service.subsystem;resolution:=optional, *
+Import-Package: org.osgi.service.subsystem;resolution:=optional,!org.ops4j.pax.exam.cm.*, *

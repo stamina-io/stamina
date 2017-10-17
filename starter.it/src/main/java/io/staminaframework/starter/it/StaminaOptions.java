@@ -62,7 +62,6 @@ public final class StaminaOptions {
                 mavenBundle("io.staminaframework", "io.staminaframework.subsystem").versionAsInProject(),
                 frameworkProperty(Constants.FRAMEWORK_BEGINNING_STARTLEVEL).value("100"),
                 frameworkProperty(FelixConstants.BUNDLE_STARTLEVEL_PROP).value("80"),
-                //frameworkProperty(Constants.FRAMEWORK_BUNDLE_PARENT_BOOT).value(Constants.FRAMEWORK_BUNDLE_PARENT_FRAMEWORK),
                 junitBundles()
         );
     }
