@@ -50,6 +50,21 @@
             <groupId>org.eclipse.equinox</groupId>
             <artifactId>org.eclipse.equinox.region</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.gogo.runtime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.utils</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>io.staminaframework.asciitable</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
     <build>

@@ -50,6 +50,16 @@
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.fileinstall</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.gogo.runtime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>io.staminaframework.asciitable</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
     <build>

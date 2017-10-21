@@ -1,3 +1,4 @@
-Export-Package: io.staminaframework.command, org.apache.felix.service.command
+Export-Package: org.apache.felix.service.command
 Import-Package: org.apache.felix.service.command;resolution:=optional, !org.apache.felix.gogo.runtime, *
+Private-Package: io.staminaframework.asciitable
 DynamicImport-Package: org.apache.felix.gogo.runtime
