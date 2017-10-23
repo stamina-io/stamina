@@ -124,13 +124,13 @@ public class ServiceCommands {
 
     @Descriptor("Display all services")
     public void list(CommandSession session) throws InvalidSyntaxException {
-        list(session, null, false);
+        list(session, false, null);
     }
 
     @Descriptor("Display services matching a filter and an interface")
     public void list(CommandSession session,
-                     @Descriptor("service") String service,
-                     @Descriptor("filter") @Parameter(names = {"-f", "--filter"}, absentValue = "false", presentValue = "true") boolean filter) throws InvalidSyntaxException {
+                     @Descriptor("filter") @Parameter(names = {"-f", "--filter"}, absentValue = "false", presentValue = "true") boolean filter,
+                     @Descriptor("service") String service) throws InvalidSyntaxException {
         final String serviceItf;
         final String serviceFilter;
         if (filter) {
