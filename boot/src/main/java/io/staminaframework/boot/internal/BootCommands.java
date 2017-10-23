@@ -58,7 +58,7 @@ public class BootCommands {
 
     @Descriptor("Display platform information")
     public void info() throws InvalidSyntaxException {
-        final AsciiTable table = AsciiTable.of(asList("Name", "Value"));
+        final AsciiTable table = AsciiTable.of(asList("NAME", "VALUE"));
         table.add(asList("Java version", System.getProperty("java.version")));
         table.add(asList("Java home", System.getProperty("java.home")));
         table.add(asList("Stamina Framework version", bundleContext.getBundle().getVersion().toString()));
