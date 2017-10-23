@@ -228,11 +228,6 @@
                         <archive>
                             <manifestEntries>
                                 <Git-Id>${stamina.build}</Git-Id>
-                                <Bundle-Copyright>Copyright (c) 2017 Stamina.io developers</Bundle-Copyright>
-                                <Bundle-License>https://www.apache.org/licenses/LICENSE-2.0.txt</Bundle-License>
-                                <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
-                                <Bundle-DocURL>${project.url}</Bundle-DocURL>
-                                <Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment>
                             </manifestEntries>
                         </archive>
                     </configuration>
