@@ -19,14 +19,10 @@ package io.staminaframework.boot.internal;
 import io.staminaframework.asciitable.AsciiTable;
 import org.apache.felix.service.command.CommandProcessor;
 import org.apache.felix.service.command.Descriptor;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.Constants;
-import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.*;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.subsystem.Subsystem;
 
 import java.lang.management.ManagementFactory;
 import java.text.NumberFormat;
@@ -68,7 +64,10 @@ public class BootCommands {
         table.add(asList("Stamina Framework version", bundleContext.getBundle().getVersion().toString()));
         table.add(asList("Stamina Framework home", System.getProperty("stamina.home")));
         table.add(asList("Installed bundles", String.valueOf(bundleContext.getBundles().length)));
-        table.add(asList("Installed subsystems", String.valueOf(bundleContext.getServiceReferences(Subsystem.class, null).size())));
+
+        final ServiceReference<?>[] subsystemRefs = bundleContext.getServiceReferences("org.osgi.service.subsystem.Subsystem", null);
+        final int subsystemCount = subsystemRefs != null ? subsystemRefs.length : 0;
+        table.add(asList("Installed subsystems", String.valueOf(subsystemCount)));
 
         final Duration uptime = Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime());
         final long hours = uptime.toHours();
