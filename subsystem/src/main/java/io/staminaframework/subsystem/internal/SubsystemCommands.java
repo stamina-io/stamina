@@ -18,7 +18,11 @@ package io.staminaframework.subsystem.internal;
 
 import io.staminaframework.asciitable.AsciiTable;
 import org.apache.felix.service.command.CommandProcessor;
+import org.apache.felix.service.command.CommandSession;
 import org.apache.felix.service.command.Descriptor;
+import org.apache.felix.service.command.Parameter;
+import org.apache.felix.utils.manifest.Clause;
+import org.apache.felix.utils.manifest.Parser;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 import org.osgi.service.component.annotations.Activate;
@@ -28,6 +32,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.subsystem.Subsystem;
 import org.osgi.service.subsystem.SubsystemConstants;
 
+import java.io.PrintStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,6 +51,7 @@ import static java.util.Arrays.asList;
                 CommandProcessor.COMMAND_FUNCTION + "=stop",
                 CommandProcessor.COMMAND_FUNCTION + "=install",
                 CommandProcessor.COMMAND_FUNCTION + "=uninstall",
+                CommandProcessor.COMMAND_FUNCTION + "=headers",
         })
 public class SubsystemCommands {
     private static final Map<Subsystem.State, String> SUBSYSTEM_STATES = new HashMap<>(10);
@@ -78,7 +84,8 @@ public class SubsystemCommands {
     }
 
     @Descriptor("List installed subsystems")
-    public void list() {
+    public void list(CommandSession session,
+                     @Descriptor("show symbolic name") @Parameter(names = {"-s", "--symbolic-name"}, absentValue = "false", presentValue = "true") boolean showSymbolicName) {
         final AsciiTable table = AsciiTable.of(
                 asList("ID", "PARENTS", "STATE", "TYPE", "NAME"));
         final SortedSet<Subsystem> subsystems = new TreeSet<>(SubsystemComparator.INSTANCE);
@@ -98,8 +105,12 @@ public class SubsystemCommands {
             }
 
             final StringBuilder buf = new StringBuilder(64);
-            buf.append(subsystem.getSubsystemHeaders(null)
-                    .getOrDefault(SubsystemConstants.SUBSYSTEM_NAME, subsystem.getSymbolicName()));
+            if (showSymbolicName) {
+                buf.append(subsystem.getSymbolicName());
+            } else {
+                buf.append(subsystem.getSubsystemHeaders(null)
+                        .getOrDefault(SubsystemConstants.SUBSYSTEM_NAME, subsystem.getSymbolicName()));
+            }
             final Version version = subsystem.getVersion();
             if (!Version.emptyVersion.equals(version)) {
                 buf.append(" (").append(version).append(")");
@@ -115,7 +126,7 @@ public class SubsystemCommands {
                     ));
         }
 
-        table.render(System.out);
+        table.render(session.getConsole());
     }
 
     private void listChildren(Subsystem parent, Set<Subsystem> subsystems) {
@@ -145,6 +156,29 @@ public class SubsystemCommands {
     @Descriptor("Uninstall a subsystem")
     public void uninstall(Subsystem sys) {
         sys.uninstall();
+    }
+
+    @Descriptor("Display subsystem headers")
+    public void headers(CommandSession session, Subsystem subsystem) {
+        final Map<String, String> headers = subsystem.getSubsystemHeaders(null);
+        final SortedMap<String, String> sortedHeaders = new TreeMap<>();
+        for (final Map.Entry<String, String> e : headers.entrySet()) {
+            final String key = e.getKey();
+            final String rawValue = e.getValue();
+            try {
+                final Clause[] clauses = Parser.parseHeader(rawValue);
+                final String value = String.join(", ",
+                        Arrays.asList(clauses).stream()
+                                .map(c -> c.toString())
+                                .collect(Collectors.toList()));
+                sortedHeaders.put(key, value);
+            } catch (IllegalArgumentException ignore) {
+            }
+        }
+        final PrintStream out = session.getConsole();
+        for (final Map.Entry<String, String> e : sortedHeaders.entrySet()) {
+            out.println(e.getKey() + ": " + e.getValue());
+        }
     }
 
     private static class SubsystemComparator implements Comparator<Subsystem> {

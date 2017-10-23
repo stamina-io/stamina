@@ -18,8 +18,11 @@ package io.staminaframework.boot.internal;
 
 import io.staminaframework.asciitable.AsciiTable;
 import org.apache.felix.service.command.CommandProcessor;
+import org.apache.felix.service.command.CommandSession;
 import org.apache.felix.service.command.Descriptor;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -40,7 +43,7 @@ import static java.util.Arrays.asList;
         property = {
                 CommandProcessor.COMMAND_SCOPE + "=boot",
                 CommandProcessor.COMMAND_FUNCTION + "=info",
-                CommandProcessor.COMMAND_FUNCTION + "=shutdown",
+                CommandProcessor.COMMAND_FUNCTION + "=version",
         }
 )
 public class BootCommands {
@@ -57,7 +60,7 @@ public class BootCommands {
     }
 
     @Descriptor("Display platform information")
-    public void info() throws InvalidSyntaxException {
+    public void info(CommandSession session) throws InvalidSyntaxException {
         final AsciiTable table = AsciiTable.of(asList("NAME", "VALUE"));
         table.add(asList("Java version", System.getProperty("java.version")));
         table.add(asList("Java home", System.getProperty("java.home")));
@@ -90,11 +93,12 @@ public class BootCommands {
         }
         table.add(asList("Uptime", uptimeStr));
 
-        table.render(System.out);
+        table.render(session.getConsole());
     }
 
-    @Descriptor("Gracefully shutdown platform")
-    public void shutdown() throws BundleException {
-        bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION).stop();
+    @Descriptor("Display platform version")
+    public void version(CommandSession session) {
+        final String version = bundleContext.getBundle().getVersion().toString();
+        session.getConsole().println(version);
     }
 }

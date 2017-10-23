@@ -16,7 +16,9 @@
 
 package io.staminaframework.asciitable;
 
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -79,12 +81,13 @@ public final class AsciiTable {
         return this;
     }
 
+
     /**
      * Render this table.
      *
      * @param out output stream where this table should be rendered
      */
-    public void render(PrintStream out) {
+    public void render(PrintWriter out) {
         final Map<Integer, Integer> colWidths = new HashMap<>(rows.size());
 
         for (int c = 0; c < columns.size(); ++c) {
@@ -156,6 +159,15 @@ public final class AsciiTable {
             }
         }
         out.flush();
+    }
+
+    /**
+     * Render this table.
+     *
+     * @param out output stream where this table should be rendered
+     */
+    public void render(PrintStream out) {
+        render(new PrintWriter(new OutputStreamWriter(out)));
     }
 
     private static String center(String text, int len) {

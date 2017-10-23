@@ -18,7 +18,9 @@ package io.staminaframework.boot.internal;
 
 import io.staminaframework.asciitable.AsciiTable;
 import org.apache.felix.service.command.CommandProcessor;
+import org.apache.felix.service.command.CommandSession;
 import org.apache.felix.service.command.Descriptor;
+import org.apache.felix.service.command.Parameter;
 import org.apache.felix.utils.manifest.Clause;
 import org.apache.felix.utils.manifest.Parser;
 import org.osgi.framework.*;
@@ -73,7 +75,8 @@ public class BundleCommands {
     }
 
     @Descriptor("List installed bundles")
-    public void list() {
+    public void list(CommandSession session,
+                     @Descriptor("show symbolic name") @Parameter(names = {"-s", "--symbolic-name"}, absentValue = "false", presentValue = "true") boolean showSymbolicName) {
         final Bundle[] bundles = bundleContext.getBundles();
         Arrays.sort(bundles, BundleComparator.INSTANCE);
 
@@ -89,10 +92,14 @@ public class BundleCommands {
 
             String name = bundle.getHeaders().get(Constants.BUNDLE_NAME);
             final StringBuilder buf = new StringBuilder(64);
-            if (name == null) {
+            if (showSymbolicName) {
                 buf.append(bundle.getSymbolicName());
             } else {
-                buf.append(name);
+                if (name == null) {
+                    buf.append(bundle.getSymbolicName());
+                } else {
+                    buf.append(name);
+                }
             }
 
             final Version version = bundle.getVersion();
@@ -102,7 +109,7 @@ public class BundleCommands {
             row.add(buf.toString());
             table.add(row);
         }
-        table.render(System.out);
+        table.render(session.getConsole());
     }
 
     @Descriptor("Start a bundle")
@@ -131,7 +138,7 @@ public class BundleCommands {
     }
 
     @Descriptor("Display bundle headers")
-    public void headers(Bundle bundle) {
+    public void headers(CommandSession session, Bundle bundle) {
         final SortedMap<String, String> sortedHeaders = new TreeMap<>();
         final Dictionary<String, String> rawHeaders = bundle.getHeaders();
         for (final Enumeration<String> keys = rawHeaders.keys(); keys.hasMoreElements(); ) {
@@ -150,7 +157,7 @@ public class BundleCommands {
             }
         }
         for (final Map.Entry<String, String> e : sortedHeaders.entrySet()) {
-            System.out.println(e.getKey() + ": " + e.getValue());
+            session.getConsole().println(e.getKey() + ": " + e.getValue());
         }
     }
 
