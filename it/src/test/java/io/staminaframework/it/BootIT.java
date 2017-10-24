@@ -44,12 +44,12 @@ import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 
 /**
- * Integration tests for bundle <code>io.staminaframework.boot.helper</code>.
+ * Integration tests for bundle <code>io.staminaframework.boot</code>.
  *
  * @author Stamina Framework developers
  */
 @RunWith(PaxExam.class)
-public class BootHelperIT {
+public class BootIT {
     @Inject
     private BundleContext bundleContext;
 
