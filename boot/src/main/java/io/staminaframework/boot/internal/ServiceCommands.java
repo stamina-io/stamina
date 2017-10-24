@@ -53,6 +53,11 @@ public class ServiceCommands {
         this.bundleContext = bundleContext;
     }
 
+    @Descriptor("Display all services properties")
+    public void get(CommandSession session) throws InvalidSyntaxException {
+        get(session, false, null);
+    }
+
     @Descriptor("Display service properties")
     public void get(CommandSession session,
                     @Descriptor("use argument as a filter") @Parameter(names = {"-f", "--filter"}, absentValue = "false", presentValue = "true") boolean filter,
@@ -138,7 +143,7 @@ public class ServiceCommands {
         list(session, false, null);
     }
 
-    @Descriptor("Display services matching a filter and an interface")
+    @Descriptor("Display services matching a filter or an interface")
     public void list(CommandSession session,
                      @Descriptor("use argument as a filter") @Parameter(names = {"-f", "--filter"}, absentValue = "false", presentValue = "true") boolean filter,
                      @Descriptor("service target (interface or filter)") String service) throws InvalidSyntaxException {

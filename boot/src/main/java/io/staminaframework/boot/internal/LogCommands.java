@@ -68,14 +68,8 @@ public class LogCommands {
     }
 
     @Descriptor("Set log level for a logger")
-    public void set(String[] args) throws IOException {
-        if (args.length != 2) {
-            throw new IllegalArgumentException("Usage: log:set <logger> <level>");
-        }
-
-        final String logger = args[0];
-        final String level = args[1];
-
+    public void set(@Descriptor("logger name") String logger,
+                    @Descriptor("logger level") String level) throws IOException {
         final Configuration conf = cm.getConfiguration("org.ops4j.pax.logging");
         final Dictionary<String, Object> existingProps = conf.getProperties();
         final Hashtable<String, Object> newProps = new Hashtable<>(8);
@@ -112,7 +106,8 @@ public class LogCommands {
     }
 
     @Descriptor("Get log level")
-    public void get(CommandSession session, String... loggers) throws IOException {
+    public void get(CommandSession session,
+                    @Descriptor("logger names") String... loggers) throws IOException {
         if (loggers == null || loggers.length == 0) {
             loggers = new String[]{"root"};
         }
@@ -152,7 +147,8 @@ public class LogCommands {
     }
 
     @Descriptor("Display last log entries")
-    public void tail(CommandSession session, @Parameter(names = {"-e", "--entries"}, absentValue = "50") int max) {
+    public void tail(CommandSession session,
+                     @Descriptor("set number of entries to display") @Parameter(names = {"-e", "--entries"}, absentValue = "50") int max) {
         final List<LogEntry> entries = Collections.list(logReaderService.getLog());
         Collections.sort(entries, LogEntryComparator.INSTANCE);
 

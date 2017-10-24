@@ -59,7 +59,7 @@ public class ConfigurationCommands {
         }
     }
 
-    @Descriptor("Display configuration from PID or PID-factory")
+    @Descriptor("Display configuration from a PID")
     public void get(CommandSession session,
                     @Descriptor("configuration PID") String configurationPid)
             throws IOException, InvalidSyntaxException {

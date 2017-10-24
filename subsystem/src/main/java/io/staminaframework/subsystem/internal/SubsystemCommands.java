@@ -139,27 +139,28 @@ public class SubsystemCommands {
     }
 
     @Descriptor("Start a subsystem")
-    public void start(Subsystem sys) {
+    public void start(@Descriptor("subsystem to start") Subsystem sys) {
         sys.start();
     }
 
     @Descriptor("Stop a subsystem")
-    public void stop(Subsystem sys) {
+    public void stop(@Descriptor("subsystem to stop") Subsystem sys) {
         sys.stop();
     }
 
     @Descriptor("Install a subsystem")
-    public void install(String location) {
+    public void install(@Descriptor("subsystem location") String location) {
         root.install(location);
     }
 
     @Descriptor("Uninstall a subsystem")
-    public void uninstall(Subsystem sys) {
+    public void uninstall(@Descriptor("subsystem to uninstall") Subsystem sys) {
         sys.uninstall();
     }
 
     @Descriptor("Display subsystem headers")
-    public void headers(CommandSession session, Subsystem subsystem) {
+    public void headers(CommandSession session,
+                        @Descriptor("subsystem to inspect") Subsystem subsystem) {
         final Map<String, String> headers = subsystem.getSubsystemHeaders(null);
         final SortedMap<String, String> sortedHeaders = new TreeMap<>();
         for (final Map.Entry<String, String> e : headers.entrySet()) {

@@ -66,7 +66,6 @@ public class BundleCommands {
     @Activate
     public void activate(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
-        ;
     }
 
     @Deactivate
@@ -128,17 +127,18 @@ public class BundleCommands {
     }
 
     @Descriptor("Install a bundle")
-    public void install(String url) throws BundleException {
+    public void install(@Descriptor("bundle location") String url) throws BundleException {
         bundleContext.installBundle(url);
     }
 
     @Descriptor("Uninstall a bundle")
-    public void uninstall(Bundle bundle) throws BundleException {
+    public void uninstall(@Descriptor("bundle to uninstall") Bundle bundle) throws BundleException {
         bundle.uninstall();
     }
 
     @Descriptor("Display bundle headers")
-    public void headers(CommandSession session, Bundle bundle) {
+    public void headers(CommandSession session,
+                        @Descriptor("bundle to inspect") Bundle bundle) {
         final SortedMap<String, String> sortedHeaders = new TreeMap<>();
         final Dictionary<String, String> rawHeaders = bundle.getHeaders();
         for (final Enumeration<String> keys = rawHeaders.keys(); keys.hasMoreElements(); ) {
