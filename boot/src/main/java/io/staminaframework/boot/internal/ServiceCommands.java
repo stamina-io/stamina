@@ -54,8 +54,19 @@ public class ServiceCommands {
     }
 
     @Descriptor("Display service properties")
-    public void get(CommandSession session, String serviceClass) throws InvalidSyntaxException {
-        final ServiceReference<?>[] refs = bundleContext.getAllServiceReferences(serviceClass, null);
+    public void get(CommandSession session,
+                    @Descriptor("use argument as a filter") @Parameter(names = {"-f", "--filter"}, absentValue = "false", presentValue = "true") boolean filter,
+                    @Descriptor("service target (interface or filter)") String service) throws InvalidSyntaxException {
+        final String serviceItf;
+        final String serviceFilter;
+        if (filter) {
+            serviceItf = null;
+            serviceFilter = service;
+        } else {
+            serviceItf = service;
+            serviceFilter = null;
+        }
+        final ServiceReference<?>[] refs = bundleContext.getAllServiceReferences(serviceItf, serviceFilter);
         if (refs == null || refs.length == 0) {
             return;
         }
@@ -129,8 +140,8 @@ public class ServiceCommands {
 
     @Descriptor("Display services matching a filter and an interface")
     public void list(CommandSession session,
-                     @Descriptor("filter") @Parameter(names = {"-f", "--filter"}, absentValue = "false", presentValue = "true") boolean filter,
-                     @Descriptor("service") String service) throws InvalidSyntaxException {
+                     @Descriptor("use argument as a filter") @Parameter(names = {"-f", "--filter"}, absentValue = "false", presentValue = "true") boolean filter,
+                     @Descriptor("service target (interface or filter)") String service) throws InvalidSyntaxException {
         final String serviceItf;
         final String serviceFilter;
         if (filter) {
