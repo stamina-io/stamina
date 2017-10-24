@@ -53,7 +53,7 @@ public class SubsystemInstaller implements ArtifactInstaller {
     }
 
     @Deactivate
-    public void deactivate() throws IOException {
+    public void deactivate() {
         bundleContext = null;
     }
 
@@ -63,7 +63,7 @@ public class SubsystemInstaller implements ArtifactInstaller {
         final String sid = getSubsystemId(man);
 
         final String spath = artifact.getCanonicalFile().toURI().toURL().toExternalForm();
-        final boolean alreadyInstalled = bundleContext.getBundle(spath) != null;
+        final boolean alreadyInstalled = lookupSubsystem(root, spath) != null;
         if (alreadyInstalled) {
             logService.log(LogService.LOG_DEBUG, "Subsystem " + sid + " is already installed");
             return;
@@ -73,6 +73,18 @@ public class SubsystemInstaller implements ArtifactInstaller {
         final Subsystem sub = root.install(spath);
         logService.log(LogService.LOG_INFO, "Starting subsystem: " + sid);
         sub.start();
+    }
+
+    private Subsystem lookupSubsystem(Subsystem parent, String url) {
+        if (parent.getLocation().equals(url)) {
+            return parent;
+        }
+        for (final Subsystem child : parent.getChildren()) {
+            if (lookupSubsystem(child, url) != null) {
+                return child;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -89,13 +101,12 @@ public class SubsystemInstaller implements ArtifactInstaller {
     public void uninstall(File artifact) throws Exception {
         final String spath = artifact.getCanonicalFile().toURI().toURL().toExternalForm();
         // Subsystem is already installed: we need to uninstall it first.
-        for (final Subsystem sub : root.getChildren()) {
-            if (spath.equals(sub.getLocation())) {
-                final String sid = getSubsystemId(sub);
-                logService.log(LogService.LOG_INFO, "Uninstalling subsystem: " + sid);
-                sub.uninstall();
-                logService.log(LogService.LOG_INFO, "Subsystem uninstalled: " + sid);
-            }
+        final Subsystem subsystem = lookupSubsystem(root, spath);
+        if (subsystem != null) {
+            final String sid = getSubsystemId(subsystem);
+            logService.log(LogService.LOG_INFO, "Uninstalling subsystem: " + sid);
+            subsystem.uninstall();
+            logService.log(LogService.LOG_INFO, "Subsystem uninstalled: " + sid);
         }
     }
 
