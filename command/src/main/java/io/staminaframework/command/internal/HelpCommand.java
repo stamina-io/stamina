@@ -56,7 +56,7 @@ public class HelpCommand implements Command {
     }
 
     @Override
-    public void execute(Context ctx) throws Exception {
+    public boolean execute(Context ctx) throws Exception {
         final String cmdName = ctx.arguments().length == 0 ? null : ctx.arguments()[0];
         if (cmdName == null) {
             final Collection<ServiceReference<Command>> commandRefs =
@@ -88,5 +88,6 @@ public class HelpCommand implements Command {
                 }
             }
         }
+        return false;
     }
 }

@@ -39,9 +39,10 @@ public interface Command {
      * Execute this command.
      *
      * @param context command context
+     * @return <code>true</code> if platform should keep running after command execution
      * @throws Exception if command execution failed
      */
-    void execute(Context context) throws Exception;
+    boolean execute(Context context) throws Exception;
 
     /**
      * Command context interface.

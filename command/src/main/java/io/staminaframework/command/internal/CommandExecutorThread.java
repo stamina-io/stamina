@@ -56,16 +56,18 @@ class CommandExecutorThread extends Thread {
             if (cmd != null) {
                 final CommandContext ctx = new CommandContext(commandLine.arguments(), commandLine.workingDirectory(),
                         System.in, System.out, System.err);
+                boolean keepPlatformRunning = false;
                 try {
                     // Got one command: let's go!
                     logService.log(LogService.LOG_INFO, "Executing command-line: $ " + commandLine);
-                    cmd.execute(ctx);
+                    keepPlatformRunning = cmd.execute(ctx);
                 } catch (Exception e) {
-                    logService.log(LogService.LOG_WARNING, "Command execution failed", e);
-                    ctx.err().println(e.getMessage());
+                    logService.log(LogService.LOG_ERROR, "Command execution failed", e);
                 } finally {
                     // Stop framework after command execution.
-                    stopFramework();
+                    if (!keepPlatformRunning) {
+                        stopFramework();
+                    }
                 }
             } else {
                 logService.log(LogService.LOG_ERROR, "Command not found: " + commandLine.command());
@@ -73,8 +75,6 @@ class CommandExecutorThread extends Thread {
             }
         } catch (InterruptedException e) {
             logService.log(LogService.LOG_DEBUG, "Command executor thread interrupted");
-        } finally {
-            commandTracker.close();
         }
     }
 

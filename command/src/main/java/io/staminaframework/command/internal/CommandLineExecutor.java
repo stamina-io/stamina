@@ -71,6 +71,7 @@ public class CommandLineExecutor {
             commandTracker = null;
         }
         if (executor != null) {
+            executor.interrupt();
             try {
                 executor.join(10000);
             } catch (InterruptedException e) {

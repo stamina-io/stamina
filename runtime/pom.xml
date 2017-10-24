@@ -42,6 +42,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>io.staminaframework.provisioning</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>io.staminaframework.command</artifactId>
             <version>${project.version}</version>
         </dependency>

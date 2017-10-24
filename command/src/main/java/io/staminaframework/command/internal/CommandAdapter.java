@@ -49,10 +49,10 @@ public class CommandAdapter implements Command {
     }
 
     @Override
-    public void execute(Context context) throws Exception {
+    public boolean execute(Context context) throws Exception {
         if (context.arguments().length < 1) {
             help(context.out());
-            return;
+            return false;
         }
 
         boolean executed = false;
@@ -76,5 +76,6 @@ public class CommandAdapter implements Command {
         if (!executed) {
             throw new IllegalArgumentException("Command not found: " + commandNotFound);
         }
+        return false;
     }
 }

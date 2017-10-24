@@ -252,6 +252,7 @@
         <module>asciitable</module>
         <module>boot</module>
         <module>command</module>
+        <module>provisioning</module>
         <module>runtime</module>
         <module>subsystem</module>
         <module>starter</module>

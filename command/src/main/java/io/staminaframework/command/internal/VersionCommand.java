@@ -39,8 +39,9 @@ public class VersionCommand implements Command {
     }
 
     @Override
-    public void execute(Context ctx) throws Exception {
+    public boolean execute(Context ctx) throws Exception {
         ctx.out().println(version);
+        return false;
     }
 
     @Override
