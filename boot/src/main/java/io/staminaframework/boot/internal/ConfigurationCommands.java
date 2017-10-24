@@ -59,11 +59,22 @@ public class ConfigurationCommands {
         }
     }
 
+    @Descriptor("Display all configurations")
+    public void get(CommandSession session)
+            throws IOException, InvalidSyntaxException {
+        get(session, null);
+    }
+
     @Descriptor("Display configuration from a PID")
     public void get(CommandSession session,
                     @Descriptor("configuration PID") String configurationPid)
             throws IOException, InvalidSyntaxException {
-        final String filter = "(" + Constants.SERVICE_PID + "=" + configurationPid + ")";
+        final String filter;
+        if (configurationPid == null) {
+            filter = null;
+        } else {
+            filter = "(" + Constants.SERVICE_PID + "=" + configurationPid + ")";
+        }
         final Configuration[] confs = cm.listConfigurations(filter);
         if (confs == null || confs.length == 0) {
             return;
