@@ -70,8 +70,9 @@ public class CommandIT {
             }
 
             @Override
-            public void execute(Context ctx) throws Exception {
+            public boolean execute(Context ctx) throws Exception {
                 executed.set(true);
+                return false;
             }
         };
         final Dictionary<String, Object> cmdProps = new Hashtable<>(1);
@@ -111,11 +112,12 @@ public class CommandIT {
             }
 
             @Override
-            public void execute(Context ctx) throws Exception {
+            public boolean execute(Context ctx) throws Exception {
                 if (ctx.arguments().length == 1 && "123".equals(ctx.arguments()[0])) {
                     Files.write(p, Collections.singletonList("executed"));
                     sleep(250);
                 }
+                return false;
             }
         };
         final Dictionary<String, Object> cmdProps = new Hashtable<>(1);
