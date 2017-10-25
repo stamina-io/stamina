@@ -18,7 +18,10 @@ package io.staminaframework.provisioning.internal;
 
 import io.staminaframework.command.Command;
 import io.staminaframework.command.CommandConstants;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
 
@@ -27,10 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URL;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.net.URLConnection;
+import java.nio.file.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -45,6 +46,17 @@ import java.util.List;
 public class InstallCommand implements Command {
     @Reference
     private LogService logService;
+    private BundleContext bundleContext;
+
+    @Activate
+    void activate(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+    }
+
+    @Deactivate
+    void deactivate() {
+        this.bundleContext = null;
+    }
 
     @Override
     public void help(PrintStream out) {
@@ -62,6 +74,7 @@ public class InstallCommand implements Command {
         out.println("Lines starting with '#' are skipped.");
         out.println("Use flag '--force' to force artifact install.");
         out.println("Use flag '--start' to keep platform running when provisioning is done.");
+        out.println("Provision file arguments may refer to a downloadable resource.");
         out.println("Usage: provision:install [--force] [--start] <provision files>");
     }
 
@@ -95,17 +108,36 @@ public class InstallCommand implements Command {
             }
         }
 
+        final String httpUserAgent = "StaminaFramework/"
+                + bundleContext.getBundle().getVersion().toString();
+
         for (final String arg : context.arguments()) {
             if (arg.startsWith("--")) {
                 continue;
             }
-            final Path provisionFile = FileSystems.getDefault().getPath(arg);
-            if (!Files.exists(provisionFile)) {
-                throw new IllegalArgumentException("Provision file does not exist: " + provisionFile);
+            Path provisionFile = null;
+            try {
+                provisionFile = FileSystems.getDefault().getPath(arg);
+                if (!Files.exists(provisionFile)) {
+                    throw new IllegalArgumentException("Provision file does not exist: " + provisionFile);
+                }
+            } catch (InvalidPathException ignore) {
+            }
+            if (provisionFile == null) {
+                context.out().println("Downloading provision file: " + arg);
+                final URL provisionUrl = new URL(arg);
+                provisionFile = Files.createTempFile("stamina-provision-", ".spf");
+                provisionFile.toFile().deleteOnExit();
+
+                final URLConnection conn = provisionUrl.openConnection();
+                conn.setRequestProperty("User-Agent", httpUserAgent);
+                try (final InputStream in = conn.getInputStream()) {
+                    Files.copy(in, provisionFile, StandardCopyOption.REPLACE_EXISTING);
+                }
             }
 
             context.out().println(
-                    "Reading provision file: " + provisionFile);
+                    "Reading provision file: " + arg);
 
             final List<String> provisionLines = Files.readAllLines(provisionFile);
             for (final String provisionLine : provisionLines) {
