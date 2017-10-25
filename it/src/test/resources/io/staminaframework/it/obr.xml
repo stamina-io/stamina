@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" increment="1339935779016" name="Stamina-IT">
+    <resource>
+        <capability namespace="osgi.identity">
+            <attribute name="osgi.identity" value="stamina-hello"/>
+            <attribute name="type" value="osgi.subsystem.feature"/>
+            <attribute name="version" type="Version" value="1.0.0"/>
+        </capability>
+        <capability namespace="osgi.content">
+            <attribute name="osgi.content" value="da8464c06d41135c9aef9083ec611020d9931e1a6b3064b0df7336e18f692b7b"/>
+            <attribute name="url" value="stamina-hello-1.0.0.esa.mock"/>
+            <attribute name="size" type="Long" value="15"/>
+        </capability>
+    </resource>
+    <resource>
+        <capability namespace="osgi.identity">
+            <attribute name="osgi.identity" value="stamina-realm"/>
+            <attribute name="type" value="osgi.subsystem.feature"/>
+            <attribute name="version" type="Version" value="1.1.0"/>
+        </capability>
+        <capability namespace="osgi.content">
+            <attribute name="osgi.content" value="179e6c723273a340cdc5195ee1175456c87531ee0b529b4fc1460f13b3eeaf16"/>
+            <attribute name="url" value="stamina-realm-1.1.0.esa.mock"/>
+            <attribute name="size" type="Long" value="15"/>
+        </capability>
+    </resource>
+    <resource>
+        <capability namespace="osgi.identity">
+            <attribute name="osgi.identity" value="stamina-realm"/>
+            <attribute name="type" value="osgi.subsystem.feature"/>
+            <attribute name="version" type="Version" value="1.3.0"/>
+        </capability>
+        <capability namespace="osgi.content">
+            <attribute name="osgi.content" value="9184a4f50bb54668f5ea511695ed1ed6d2952842d8dcd01907d0fa99a9f3bc5e"/>
+            <attribute name="url" value="stamina-realm-1.3.0.esa.mock"/>
+            <attribute name="size" type="Long" value="15"/>
+        </capability>
+    </resource>
+</repository>

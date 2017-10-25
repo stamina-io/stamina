@@ -250,6 +250,7 @@
     <modules>
         <module>launcher</module>
         <module>asciitable</module>
+        <module>addon</module>
         <module>boot</module>
         <module>command</module>
         <module>provisioning</module>

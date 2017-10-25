@@ -60,6 +60,7 @@ public final class StaminaOptions {
                 mavenBundle("org.eclipse.equinox", "org.eclipse.equinox.region").versionAsInProject(),
                 mavenBundle("org.apache.aries.subsystem", "org.apache.aries.subsystem").versionAsInProject(),
                 mavenBundle("io.staminaframework", "io.staminaframework.subsystem").versionAsInProject(),
+                mavenBundle("io.staminaframework", "io.staminaframework.addon").versionAsInProject(),
                 frameworkProperty(Constants.FRAMEWORK_BEGINNING_STARTLEVEL).value("100"),
                 frameworkProperty(FelixConstants.BUNDLE_STARTLEVEL_PROP).value("80"),
                 junitBundles()
