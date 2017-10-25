@@ -41,7 +41,7 @@ import java.util.List;
  *
  * @author Stamina Framework developers
  */
-@Component(service = Command.class, property = CommandConstants.COMMAND + "=install")
+@Component(service = Command.class, property = CommandConstants.COMMAND + "=provision:install")
 public class InstallCommand implements Command {
     @Reference
     private LogService logService;
@@ -57,7 +57,7 @@ public class InstallCommand implements Command {
         out.println("Lines starting with '#' are not read.");
         out.println("Use flag '--force' to force artifact install.");
         out.println("Use flag '--start' to keep platform running when provisioning is done.");
-        out.println("Usage: install [--force] [--start] <provision files>");
+        out.println("Usage: provision:install [--force] [--start] <provision files>");
     }
 
     @Override
