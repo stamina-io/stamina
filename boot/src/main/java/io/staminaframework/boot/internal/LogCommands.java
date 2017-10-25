@@ -164,6 +164,11 @@ public class LogCommands {
             final long bundleId = log.getBundle().getBundleId();
             final String logStr = String.format("%s [%-7s] %40s (%3s) - %s", date, level, bundle, bundleId, log.getMessage());
             out.println(logStr);
+
+            final Throwable error = log.getException();
+            if (error != null) {
+                error.printStackTrace(out);
+            }
         }
     }
 
