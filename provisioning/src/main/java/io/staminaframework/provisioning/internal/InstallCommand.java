@@ -51,10 +51,15 @@ public class InstallCommand implements Command {
         out.println("Install artifacts (such as bundle / subsystem) to the 'addons' directory.");
         out.println("Provision files contains artifact URLs to install, one by line.");
         out.println("All platform supported URL protocols can be used, such as:");
+        out.println("  - addon:io.staminaframework.addons.shell");
         out.println("  - mvn:groupId/artifactId/version/type");
         out.println("  - http://repo.site/artifact.esa");
         out.println("  - file://extensions/bundle.jar");
-        out.println("Lines starting with '#' are not read.");
+        out.println("Following artifact types are supported:");
+        out.println("  - Bundle (*.jar)");
+        out.println("  - Subsystem/addon (*.esa)");
+        out.println("  - Configuration (*.cfg)");
+        out.println("Lines starting with '#' are skipped.");
         out.println("Use flag '--force' to force artifact install.");
         out.println("Use flag '--start' to keep platform running when provisioning is done.");
         out.println("Usage: provision:install [--force] [--start] <provision files>");
@@ -157,8 +162,10 @@ public class InstallCommand implements Command {
             // ArtifactInstaller from FileInstall requires a valid extension:
             // we do our best to guess file type.
             final String ext;
-            if (url.toLowerCase().endsWith(".esa") || url.contains("/esa")) {
+            if (url.startsWith("addon:") || url.contains("/esa") || url.toLowerCase().endsWith(".esa")) {
                 ext = ".esa";
+            } else if (url.contains("/cfg") || url.toLowerCase().endsWith(".cfg")) {
+                ext = ".cfg";
             } else {
                 ext = ".jar";
             }
