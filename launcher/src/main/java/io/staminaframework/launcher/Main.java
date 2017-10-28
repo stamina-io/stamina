@@ -264,13 +264,19 @@ public class Main {
         }
 
         // OSGi framework is now ready.
+        int exitCode = 0;
         try {
-            fmk.waitForStop(0);
+            final FrameworkEvent evt = fmk.waitForStop(0);
+            if (evt.getType() == FrameworkEvent.STOPPED_UPDATE
+                    || evt.getType() == FrameworkEvent.STOPPED_BOOTCLASSPATH_MODIFIED) {
+                // Framework wants to be restarted: use a special return code.
+                exitCode = 100;
+            }
         } catch (InterruptedException e) {
             logger.info(() -> "Stopping OSGi framework");
         }
 
-        System.exit(0);
+        System.exit(exitCode);
     }
 
     private static SortedMap<String, String> sortMap(Map<String, String> map) {
