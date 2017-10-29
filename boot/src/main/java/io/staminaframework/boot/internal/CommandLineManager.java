@@ -33,6 +33,8 @@ import java.util.Hashtable;
 /**
  * Component responsible for publishing a {@link CommandLine}
  * instance to the Service Registry, if a command was invoked.
+ *
+ * @author Stamina Framework developers
  */
 @Component
 public class CommandLineManager {
