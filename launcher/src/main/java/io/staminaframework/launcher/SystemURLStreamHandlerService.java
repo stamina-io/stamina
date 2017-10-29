@@ -21,14 +21,15 @@ import org.apache.felix.utils.manifest.Parser;
 import org.osgi.framework.Constants;
 import org.osgi.service.url.AbstractURLStreamHandlerService;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
@@ -39,12 +40,18 @@ import java.util.stream.Collectors;
  * @author Stamina Framework developers
  */
 class SystemURLStreamHandlerService extends AbstractURLStreamHandlerService {
-    private final Map<String, URL> bundlesBySymbolicName;
+    private final Map<String, URL> bundlesBySymbolicName = new HashMap<>(16);
 
-    public SystemURLStreamHandlerService(final File systemRepoDir) throws IOException {
-        bundlesBySymbolicName = Files.walk(systemRepoDir.toPath())
-                .filter(p -> p.toString().toLowerCase().endsWith(".jar"))
-                .collect(Collectors.toMap(this::getSymbolicName, this::toURL));
+    public SystemURLStreamHandlerService(final Path systemRepoDir, final Logger logger) throws IOException {
+        final Set<Path> files = Files.walk(systemRepoDir)
+                .filter(p -> p.getFileName().toString().toLowerCase().endsWith(".jar"))
+                .collect(Collectors.toSet());
+        for (final Path p : files) {
+            final String bsn = getSymbolicName(p);
+            if (bundlesBySymbolicName.put(bsn, p.toUri().toURL()) != null) {
+                logger.warn(() -> "Found duplicate bundle in system repository: " + p);
+            }
+        }
     }
 
     @Override

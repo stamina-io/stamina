@@ -19,9 +19,10 @@ package io.staminaframework.launcher;
 import org.apache.felix.utils.properties.Properties;
 import org.osgi.framework.BundleContext;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -41,12 +42,12 @@ final class ConfigurationUtils {
      * @param context framework bundle context
      * @return configuration properties
      */
-    public static Map<String, String> loadConfiguration(File file, BundleContext context) throws IOException {
-        if (!file.exists()) {
-            return Collections.emptyMap();
+    public static Map<String, String> loadConfiguration(Path file, BundleContext context) throws IOException {
+        if (!Files.exists(file)) {
+            return new HashMap<>(4);
         }
 
-        final Properties props = new Properties(file, context);
+        final Properties props = new Properties(file.toFile(), context);
         final String includeProp = props.getProperty("${includes}");
         if (includeProp != null) {
             final StringTokenizer tokens = new StringTokenizer(includeProp, " ");
@@ -55,8 +56,8 @@ final class ConfigurationUtils {
                 if (filePathToInclude.length() == 0) {
                     continue;
                 }
-                final File fileToInclude = new File(file.getParent(), filePathToInclude);
-                if (fileToInclude.exists()) {
+                final Path fileToInclude = file.getParent().resolve(filePathToInclude);
+                if (Files.exists(fileToInclude)) {
                     final Map<String, String> propsToInclude = loadConfiguration(fileToInclude, context);
                     if (propsToInclude != null && !propsToInclude.isEmpty()) {
                         props.putAll(propsToInclude);
