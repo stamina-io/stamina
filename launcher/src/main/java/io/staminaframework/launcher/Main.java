@@ -91,17 +91,22 @@ public class Main {
             });
         }
 
-        // Copy some important key entries to System properties.
-        fmkConf.keySet().stream().filter(k -> k.startsWith("stamina.")).forEach(k -> {
-            System.setProperty(k, fmkConf.get(k));
-        });
+        // Make sure important properties are set.
+        final Path dataDir = FileSystems.getDefault().getPath(fmkConf.getOrDefault("stamina.data", homeDir.resolve("work").toString()));
+        fmkConf.put("stamina.home", homeDir.toString());
+        fmkConf.put("stamina.data", dataDir.toString());
+        fmkConf.put("stamina.conf", confDir.toString());
 
         // Clean-up data directory if needed.
-        final Path dataDir = FileSystems.getDefault().getPath(fmkConf.getOrDefault("stamina.data", homeDir.resolve("work").toString()));
         if (Files.exists(dataDir) && "true".equals(fmkConf.get("stamina.data.clean"))) {
             logger.info(() -> "Cleaning data directory: " + dataDir);
             deleteDir(dataDir);
         }
+
+        // Copy some important key entries to System properties.
+        fmkConf.keySet().stream().filter(k -> k.startsWith("stamina.")).forEach(k -> {
+            System.setProperty(k, fmkConf.get(k));
+        });
 
         // Make sure temp dir exists.
         final Path javaTmpDir = FileSystems.getDefault().getPath(System.getProperty("java.io.tmpdir"));
@@ -125,6 +130,15 @@ public class Main {
             final Path sysRepoDir = FileSystems.getDefault().getPath(fmkConf.getOrDefault("stamina.repo", homeDir.resolve("sys").toString()));
             new SystemRepositoryIndexer().indexSystemRepository(sysRepoDir, indexFile);
         }
+        // Add this OBR index to the configuration.
+        final StringBuilder newObrRepos = new StringBuilder(64);
+        final String obrRepos = fmkConf.getOrDefault("obr.repository.url", "");
+        newObrRepos.append(obrRepos);
+        if (newObrRepos.length() != 0) {
+            newObrRepos.append(" ");
+        }
+        newObrRepos.append(indexFile.toUri().toURL());
+        fmkConf.put("obr.repository.url", newObrRepos.toString());
 
         logger.debug(() -> "Selecting OSGi framework");
         try {
