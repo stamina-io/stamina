@@ -114,6 +114,18 @@ public class Main {
             fmkConf.put(FelixConstants.LOG_LEVEL_PROP, "0");
         }
 
+        final Path indexFile = dataDir.resolve("obr.xml");
+        final boolean reindex = "true".equalsIgnoreCase(fmkConf.getOrDefault("stamina.repo.reindex", "false"));
+        if (reindex) {
+            logger.debug(() -> "Deleting old system repository index");
+            Files.deleteIfExists(indexFile);
+        }
+        if (!Files.exists(indexFile) || Files.size(indexFile) == 0) {
+            logger.info(() -> "Indexing system repository");
+            final Path sysRepoDir = FileSystems.getDefault().getPath(fmkConf.getOrDefault("stamina.repo", homeDir.resolve("sys").toString()));
+            new SystemRepositoryIndexer().indexSystemRepository(sysRepoDir, indexFile);
+        }
+
         logger.debug(() -> "Selecting OSGi framework");
         try {
             fmk = selectFramework(fmkConf);

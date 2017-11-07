@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package io.staminaframework.boot.internal;
+package io.staminaframework.launcher;
 
 import org.apache.felix.utils.manifest.Parser;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.log.LogService;
-import org.osgi.service.subsystem.SubsystemConstants;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -48,59 +41,7 @@ import java.util.zip.ZipFile;
  *
  * @author Stamina Framework developers
  */
-@Component(immediate = true, configurationPid = "io.staminaframework.boot.obr")
-public class SystemRepositoryIndexer {
-    @Reference
-    private LogService logService;
-    private Path indexFile;
-    private Path sysRepo;
-
-    /**
-     * Component configuration.
-     *
-     * @author Stamina Framework developers
-     */
-    public @interface Config {
-        /**
-         * If <code>true</code>, the repository index is always generated
-         * on startup.
-         */
-        boolean reindex() default false;
-    }
-
-    @Activate
-    void activate(BundleContext bundleContext, Config config) throws IOException {
-        final String sysRepoPath = bundleContext.getProperty("stamina.repo");
-        if (sysRepoPath == null) {
-            throw new IllegalStateException("Missing framework property: stamina.repo");
-        }
-        sysRepo = FileSystems.getDefault().getPath(sysRepoPath);
-
-        final String dataPath = bundleContext.getProperty("stamina.data");
-        if (dataPath == null) {
-            throw new IllegalStateException("Missing framework property: stamina.data");
-        }
-        final Path dataDir = FileSystems.getDefault().getPath(dataPath);
-
-        indexFile = dataDir.resolve("obr.xml");
-        logService.log(LogService.LOG_DEBUG,
-                "Using generated repository index: " + indexFile);
-        if (config.reindex() && Files.exists(indexFile)) {
-            try {
-                logService.log(LogService.LOG_DEBUG,
-                        "System repository index will be regenerated");
-                Files.delete(indexFile);
-            } catch (IOException ignore) {
-            }
-        }
-
-        if (!Files.exists(indexFile) || Files.size(indexFile) == 0) {
-            // Lazily index system repository.
-            logService.log(LogService.LOG_INFO, "Indexing system repository");
-            indexSystemRepository(sysRepo, indexFile);
-        }
-    }
-
+class SystemRepositoryIndexer {
     /**
      * Index system repository.
      *
@@ -143,6 +84,9 @@ public class SystemRepositoryIndexer {
                         rsc.type = man.getMainAttributes().getValue(Constants.FRAGMENT_HOST) == null
                                 ? Resource.Type.BUNDLE : Resource.Type.FRAGMENT_BUNDLE;
                         rsc.version = man.getMainAttributes().getValue(Constants.BUNDLE_VERSION);
+                        if (rsc.version == null) {
+                            rsc.version = "0.0.0";
+                        }
                         rsc.url = "system://" + rsc.symbolicName;
                         resources.add(rsc);
                         continue;
@@ -151,13 +95,16 @@ public class SystemRepositoryIndexer {
                 e = zip.getEntry("OSGI-INF/SUBSYSTEM.MF");
                 if (e != null) {
                     final Manifest man = new Manifest(zip.getInputStream(e));
-                    final String ssn = man.getMainAttributes().getValue(SubsystemConstants.SUBSYSTEM_SYMBOLICNAME);
+                    final String ssn = man.getMainAttributes().getValue("Subsystem-SymbolicName");
                     if (ssn != null) {
-                        final String stype = man.getMainAttributes().getValue(SubsystemConstants.SUBSYSTEM_TYPE);
-                        if (SubsystemConstants.SUBSYSTEM_TYPE_FEATURE.equals(stype)) {
+                        final String stype = man.getMainAttributes().getValue("Subsystem-Type");
+                        if ("osgi.subsystem.feature".equals(stype)) {
                             rsc.symbolicName = Parser.parseHeader(ssn)[0].getName();
                             rsc.type = Resource.Type.FEATURE_SUBSYSTEM;
-                            rsc.version = man.getMainAttributes().getValue(SubsystemConstants.SUBSYSTEM_VERSION);
+                            rsc.version = man.getMainAttributes().getValue("Subsystem-Version");
+                            if (rsc.version == null) {
+                                rsc.version = "0.0.0";
+                            }
                             rsc.url = "system://" + rsc.symbolicName;
                             resources.add(rsc);
                             continue;
@@ -254,7 +201,7 @@ public class SystemRepositoryIndexer {
         enum Type {
             BUNDLE("osgi.bundle", "application/vnd.osgi.bundle"),
             FRAGMENT_BUNDLE("osgi.fragment", "application/vnd.osgi.bundle"),
-            FEATURE_SUBSYSTEM(SubsystemConstants.SUBSYSTEM_TYPE_FEATURE, "application/vnd.osgi.subsystem");
+            FEATURE_SUBSYSTEM("osgi.subsystem.feature", "application/vnd.osgi.subsystem");
 
             final String osgiType;
             final String mimeType;
