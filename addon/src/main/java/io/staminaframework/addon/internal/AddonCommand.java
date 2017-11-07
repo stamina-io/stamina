@@ -16,19 +16,16 @@
 
 package io.staminaframework.addon.internal;
 
+import io.staminaframework.addon.AddonAdmin;
 import io.staminaframework.command.Command;
 import io.staminaframework.command.CommandConstants;
 import org.apache.felix.service.command.CommandProcessor;
 import org.apache.felix.service.command.Descriptor;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.log.LogService;
-import org.osgi.service.subsystem.Subsystem;
-import org.osgi.service.subsystem.SubsystemConstants;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.URL;
 
 /**
  * This command allows you to install Stamina addons.
@@ -43,9 +40,7 @@ import java.net.URL;
         })
 public class AddonCommand implements Command {
     @Reference
-    private LogService logService;
-    @Reference(target = "(" + SubsystemConstants.SUBSYSTEM_ID_PROPERTY + "=0)")
-    private Subsystem root;
+    private AddonAdmin addonAdmin;
 
     @Override
     public void help(PrintStream out) {
@@ -64,22 +59,13 @@ public class AddonCommand implements Command {
         }
         for (final String arg : context.arguments()) {
             context.out().println("Installing addon: " + arg);
-            doInstallAddon(arg);
+            install(arg);
         }
         return false;
     }
 
     @Descriptor("Install addon")
     public void install(@Descriptor("addon spec") String addonSpec) throws IOException {
-        doInstallAddon(addonSpec);
-    }
-
-    private void doInstallAddon(String addonSpec) throws IOException {
-        final URL addonUrl = new URL("addon:" + addonSpec);
-        logService.log(LogService.LOG_INFO, "Installing addon: " + addonUrl);
-        final Subsystem subsystem = root.install(addonUrl.toExternalForm());
-
-        logService.log(LogService.LOG_INFO, "Starting addon: " + addonUrl);
-        subsystem.start();
+        addonAdmin.install(addonSpec);
     }
 }
