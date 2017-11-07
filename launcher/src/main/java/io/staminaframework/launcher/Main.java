@@ -166,9 +166,8 @@ public class Main {
 
         // Register custom URL stream handler in order to load bundles from the system repository.
         final BundleContext sysCtx = fmk.getBundleContext();
-        final Dictionary<String, Object> systemUrlProps = new Hashtable<>();
+        final Dictionary<String, Object> systemUrlProps = new Hashtable<>(1);
         systemUrlProps.put(URLConstants.URL_HANDLER_PROTOCOL, "system");
-        systemUrlProps.put(URLConstants.URL_CONTENT_MIMETYPE, "application/java-archive");
         sysCtx.registerService(URLStreamHandlerService.class, new SystemURLStreamHandlerService(homeDir.resolve("sys"), logger), systemUrlProps);
 
         logger.debug(() -> "Loading bundle start levels");

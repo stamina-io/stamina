@@ -33,6 +33,8 @@ import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * URL handler for loading bundles through the system repository.
@@ -40,28 +42,33 @@ import java.util.stream.Collectors;
  * @author Stamina Framework developers
  */
 class SystemURLStreamHandlerService extends AbstractURLStreamHandlerService {
-    private final Map<String, URL> bundlesBySymbolicName = new HashMap<>(16);
+    private final Map<String, URL> resourcesBySymbolicName = new HashMap<>(16);
 
     public SystemURLStreamHandlerService(final Path systemRepoDir, final Logger logger) throws IOException {
         final Set<Path> files = Files.walk(systemRepoDir)
-                .filter(p -> p.getFileName().toString().toLowerCase().endsWith(".jar"))
+                .filter(this::isBundleOrSubsystem)
                 .collect(Collectors.toSet());
         for (final Path p : files) {
-            final String bsn = getSymbolicName(p);
-            if (bundlesBySymbolicName.put(bsn, p.toUri().toURL()) != null) {
-                logger.warn(() -> "Found duplicate bundle in system repository: " + p);
+            final String sn = getSymbolicName(p);
+            if (resourcesBySymbolicName.put(sn, p.toUri().toURL()) != null) {
+                logger.warn(() -> "Found duplicate resource in system repository: " + p);
             }
         }
+    }
+
+    private boolean isBundleOrSubsystem(Path p) {
+        final String fileName = p.getFileName().toString().toLowerCase();
+        return fileName.endsWith(".jar") || fileName.endsWith(".esa");
     }
 
     @Override
     public URLConnection openConnection(URL u) throws IOException {
         final String symbolicName = u.getHost();
-        final URL bundle = bundlesBySymbolicName.get(symbolicName);
-        if (bundle == null) {
-            throw new IOException("Bundle not found in system repository: " + symbolicName);
+        final URL resourceLocation = resourcesBySymbolicName.get(symbolicName);
+        if (resourceLocation == null) {
+            throw new IOException("Resource not found in system repository: " + symbolicName);
         }
-        return bundle.openConnection();
+        return resourceLocation.openConnection();
     }
 
     private URL toURL(Path p) {
@@ -74,18 +81,33 @@ class SystemURLStreamHandlerService extends AbstractURLStreamHandlerService {
 
     private String getSymbolicName(Path f) {
         String sn = null;
-        try (final JarFile jar = new JarFile(f.toFile())) {
-            final Manifest man = jar.getManifest();
-            if (man != null) {
-                final String rawSn = man.getMainAttributes().getValue(Constants.BUNDLE_SYMBOLICNAME);
-                if (rawSn != null) {
-                    final Clause[] snClauses = Parser.parseHeader(rawSn);
-                    if (snClauses.length != 0) {
-                        sn = snClauses[0].getName();
+        final String fileName = f.getFileName().toString().toLowerCase();
+        if (fileName.endsWith(".jar")) {
+            try (final JarFile jar = new JarFile(f.toFile())) {
+                final Manifest man = jar.getManifest();
+                if (man != null) {
+                    final String rawSn = man.getMainAttributes().getValue(Constants.BUNDLE_SYMBOLICNAME);
+                    if (rawSn != null) {
+                        final Clause[] snClauses = Parser.parseHeader(rawSn);
+                        if (snClauses.length != 0) {
+                            sn = snClauses[0].getName();
+                        }
                     }
                 }
+            } catch (IOException ignore) {
             }
-        } catch (IOException ignore) {
+        } else if (fileName.endsWith(".esa")) {
+            try (final ZipFile zip = new ZipFile(f.toFile())) {
+                final ZipEntry e = zip.getEntry("OSGI-INF/SUBSYSTEM.MF");
+                if (e != null) {
+                    final Manifest man = new Manifest(zip.getInputStream(e));
+                    final String ssn = man.getMainAttributes().getValue("Subsystem-SymbolicName");
+                    if (ssn != null) {
+                        sn = Parser.parseHeader(ssn)[0].getName();
+                    }
+                }
+            } catch (IOException ignore) {
+            }
         }
         return sn;
     }
