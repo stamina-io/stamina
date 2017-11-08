@@ -62,7 +62,7 @@ class LogCommands {
                     loggerNames.add(logger.getName());
                 }
             }
-            Collections.sort(loggerNames);
+            Collections.sort(loggerNames, LoggerNameComparator.INSTANCE);
             loggers = loggerNames.toArray(new String[loggerNames.size()]);
         }
         for (final String logger : loggers) {
@@ -120,6 +120,21 @@ class LogCommands {
                 return 1;
             }
             return 0;
+        }
+    }
+
+    private static class LoggerNameComparator implements Comparator<String> {
+        public static final Comparator<String> INSTANCE = new LoggerNameComparator();
+
+        @Override
+        public int compare(String o1, String o2) {
+            if (Logger.ROOT_LOGGER_NAME.equals(o1)) {
+                return -1;
+            }
+            if (Logger.ROOT_LOGGER_NAME.equals(o2)) {
+                return 1;
+            }
+            return o1.compareTo(o2);
         }
     }
 }
