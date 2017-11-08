@@ -5,3 +5,5 @@ This product includes software developed at
  - The Apache Software Foundation (http://www.apache.org/)
  - Open Participation for Java (https://github.com/ops4j)
  - The Eclipse Foundation (http://www.eclipse.org)
+ - Logback (https://logback.qos.ch/)
+ - SLF4J (https://www.slf4j.org/)

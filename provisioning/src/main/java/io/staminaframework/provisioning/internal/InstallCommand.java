@@ -94,7 +94,7 @@ public class InstallCommand implements Command {
             throw new IOException("Missing addons directory: " + addonsPath);
         }
 
-        context.out().println("Starting platform provisioning");
+        log(context.out(), "Starting platform provisioning");
 
         // Parse command flags.
         boolean forceInstall = false;
@@ -124,7 +124,7 @@ public class InstallCommand implements Command {
             } catch (InvalidPathException ignore) {
             }
             if (provisionFile == null) {
-                context.out().println("Downloading provision file: " + arg);
+                log(context.out(), "Downloading provision file: " + arg);
                 final URL provisionUrl = new URL(arg);
                 provisionFile = Files.createTempFile("stamina-provision-", ".spf");
                 provisionFile.toFile().deleteOnExit();
@@ -136,7 +136,7 @@ public class InstallCommand implements Command {
                 }
             }
 
-            context.out().println(
+            log(context.out(),
                     "Reading provision file: " + arg);
 
             final List<String> provisionLines = Files.readAllLines(provisionFile);
@@ -150,14 +150,14 @@ public class InstallCommand implements Command {
                 final URL artifactUrl = new URL(urlSpec);
                 final Path target = addonsPath.resolve(toLocalPath(artifactUrl.toExternalForm()));
                 if (Files.exists(target) && !forceInstall) {
-                    context.out().println(
+                    log(context.out(),
                             "Artifact already exists: " + artifactUrl);
                     continue;
                 }
 
                 final Path tmp = Files.createTempFile("stamina-install-", ".tmp");
                 tmp.toFile().deleteOnExit();
-                context.out().println(
+                log(context.out(),
                         "Downloading artifact: " + artifactUrl);
                 try (final InputStream in = new BufferedInputStream(artifactUrl.openStream(), 4096)) {
                     // Download remote artifact and copy it to a temporary file.
@@ -165,13 +165,13 @@ public class InstallCommand implements Command {
                 }
 
                 // Move the fully downloaded file to the addons directory.
-                context.out().println(
+                log(context.out(),
                         "Installing artifact: " + artifactUrl);
                 Files.move(tmp, target, StandardCopyOption.ATOMIC_MOVE);
             }
         }
 
-        context.out().println("Platform provisioning done");
+        log(context.out(), "Platform provisioning done");
 
         return start;
     }
@@ -206,5 +206,10 @@ public class InstallCommand implements Command {
         } catch (NoSuchAlgorithmException e) {
             throw new IOException("Cannot convert URL to local file", e);
         }
+    }
+
+    private void log(PrintStream out, String message) {
+        out.print("[INFO ] ");
+        out.println(message);
     }
 }

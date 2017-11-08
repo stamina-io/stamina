@@ -298,6 +298,7 @@
         <module>addon</module>
         <module>boot</module>
         <module>command</module>
+        <module>log</module>
         <module>provisioning</module>
         <module>runtime</module>
         <module>subsystem</module>
