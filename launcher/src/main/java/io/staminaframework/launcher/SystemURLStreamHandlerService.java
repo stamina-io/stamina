@@ -19,6 +19,7 @@ package io.staminaframework.launcher;
 import org.apache.felix.utils.manifest.Clause;
 import org.apache.felix.utils.manifest.Parser;
 import org.osgi.framework.Constants;
+import org.osgi.framework.Version;
 import org.osgi.service.url.AbstractURLStreamHandlerService;
 
 import java.io.IOException;
@@ -42,45 +43,41 @@ import java.util.zip.ZipFile;
  * @author Stamina Framework developers
  */
 class SystemURLStreamHandlerService extends AbstractURLStreamHandlerService {
-    private final Map<String, URL> resourcesBySymbolicName = new HashMap<>(16);
+    private final Map<String, Resource> resourcesBySymbolicName = new HashMap<>(16);
 
     public SystemURLStreamHandlerService(final Path systemRepoDir, final Logger logger) throws IOException {
         final Set<Path> files = Files.walk(systemRepoDir)
                 .filter(this::isBundleOrSubsystem)
                 .collect(Collectors.toSet());
         for (final Path p : files) {
-            final String sn = getSymbolicName(p);
-            if (resourcesBySymbolicName.put(sn, p.toUri().toURL()) != null) {
-                logger.warn(() -> "Found duplicate resource in system repository: " + p);
+            Resource rsc = toResource(p);
+            final Resource old = resourcesBySymbolicName.get(rsc.symbolicName);
+            if (old != null) {
+                // We only keep the highest version of a given system resource.
+                rsc = rsc.version.compareTo(old.version) == 1 ? rsc : old;
             }
+            resourcesBySymbolicName.put(rsc.symbolicName, rsc);
         }
     }
 
     private boolean isBundleOrSubsystem(Path p) {
-        final String fileName = p.getFileName().toString().toLowerCase();
+        final String fileName = p.getFileName().toString();
         return fileName.endsWith(".jar") || fileName.endsWith(".esa");
     }
 
     @Override
     public URLConnection openConnection(URL u) throws IOException {
         final String symbolicName = u.getHost();
-        final URL resourceLocation = resourcesBySymbolicName.get(symbolicName);
-        if (resourceLocation == null) {
+        final Resource rsc = resourcesBySymbolicName.get(symbolicName);
+        if (rsc == null) {
             throw new IOException("Resource not found in system repository: " + symbolicName);
         }
-        return resourceLocation.openConnection();
+        return rsc.url.openConnection();
     }
 
-    private URL toURL(Path p) {
-        try {
-            return p.toUri().toURL();
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Unexpected error", e);
-        }
-    }
-
-    private String getSymbolicName(Path f) {
+    private Resource toResource(Path f) throws MalformedURLException {
         String sn = null;
+        Version v = null;
         final String fileName = f.getFileName().toString().toLowerCase();
         if (fileName.endsWith(".jar")) {
             try (final JarFile jar = new JarFile(f.toFile())) {
@@ -92,6 +89,12 @@ class SystemURLStreamHandlerService extends AbstractURLStreamHandlerService {
                         if (snClauses.length != 0) {
                             sn = snClauses[0].getName();
                         }
+                    }
+                    final String rawVersion = man.getMainAttributes().getValue(Constants.BUNDLE_VERSION);
+                    if (rawVersion == null) {
+                        v = Version.emptyVersion;
+                    } else {
+                        v = Version.parseVersion(rawVersion);
                     }
                 }
             } catch (IOException ignore) {
@@ -105,10 +108,28 @@ class SystemURLStreamHandlerService extends AbstractURLStreamHandlerService {
                     if (ssn != null) {
                         sn = Parser.parseHeader(ssn)[0].getName();
                     }
+                    final String rawVersion = man.getMainAttributes().getValue("Subsystem-Version");
+                    if (rawVersion == null) {
+                        v = Version.emptyVersion;
+                    } else {
+                        v = Version.parseVersion(rawVersion);
+                    }
                 }
             } catch (IOException ignore) {
             }
         }
-        return sn;
+        return new Resource(sn, f.toUri().toURL(), v);
+    }
+
+    private static class Resource {
+        public final Version version;
+        public final String symbolicName;
+        public final URL url;
+
+        public Resource(final String symbolicName, final URL url, final Version version) {
+            this.symbolicName = symbolicName;
+            this.url = url;
+            this.version = version;
+        }
     }
 }
