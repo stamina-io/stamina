@@ -127,7 +127,7 @@ class SystemRepositoryIndexer {
             xml.writeStartElement("repository");
             xml.writeDefaultNamespace("http://www.osgi.org/xmlns/repository/v1.0.0");
             xml.writeAttribute("increment", String.valueOf(System.currentTimeMillis()));
-            xml.writeAttribute("name", "Stamina Runtime System Repository");
+            xml.writeAttribute("name", "System Repository");
 
             for (final Resource rsc : resources) {
                 xml.writeStartElement("resource");
