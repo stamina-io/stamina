@@ -37,7 +37,7 @@ class CommandExecutorThread extends Thread {
                                  final ServiceTracker<Command, Command> commandTracker,
                                  final Bundle systemBundle,
                                  final LogService logService) {
-        super("Command Executor Thread");
+        super("Stamina Command Executor Thread");
         setPriority(Thread.MIN_PRIORITY);
         setDaemon(false);
         this.commandTimeout = commandTimeout;

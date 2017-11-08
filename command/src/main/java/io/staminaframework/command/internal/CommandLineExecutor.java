@@ -32,7 +32,7 @@ import org.osgi.util.tracker.ServiceTracker;
  *
  * @author Stamina Framework developers
  */
-@Component(configurationPid = "io.stamina.command")
+@Component(configurationPid = "io.staminaframework.command")
 public class CommandLineExecutor {
     @interface Config {
         /**
@@ -51,7 +51,7 @@ public class CommandLineExecutor {
     private Thread executor;
 
     @Activate
-    public void activate(BundleContext ctx, Config config) throws InvalidSyntaxException {
+    void activate(BundleContext ctx, Config config) throws InvalidSyntaxException {
         final Filter filter = ctx.createFilter("(&(" + Constants.OBJECTCLASS + "=" + Command.class.getName()
                 + ")(" + CommandConstants.COMMAND + "=" + commandLine.command() + "))");
         commandTracker = new ServiceTracker<>(ctx, filter, null);
@@ -64,7 +64,7 @@ public class CommandLineExecutor {
     }
 
     @Deactivate
-    public void deactivate() {
+    void deactivate() {
         if (commandTracker != null) {
             // Closing ServiceTracker should be enough to "unlock" command executor thread.
             commandTracker.close();
