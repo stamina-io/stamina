@@ -1,5 +1,5 @@
-Export-Package: io.staminaframework.boot, org.apache.felix.service.command
+Export-Package: io.staminaframework.runtime.boot, org.apache.felix.service.command
 Import-Package: org.apache.felix.service.command;resolution:=optional, !org.apache.felix.gogo.runtime, org.osgi.service.cm;resolution:=optional, *
-Private-Package: io.staminaframework.asciitable, org.apache.felix.utils.manifest
+Private-Package: io.staminaframework.runtime.asciitable, org.apache.felix.utils.manifest
 DynamicImport-Package: org.apache.felix.gogo.runtime
 -include: ${project.basedir}/../bnd.bnd

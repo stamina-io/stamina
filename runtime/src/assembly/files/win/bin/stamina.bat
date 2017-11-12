@@ -17,5 +17,5 @@ if not exist "%JAVA_CMD%" set JAVA_CMD=java
     "-Dstamina.home=%STAMINA_HOME%" ^
     "-Djava.util.logging.config.file=%STAMINA_HOME%\etc\java.util.logging.properties" ^
     -cp "%STAMINA_HOME%\lib\*" ^
-    io.staminaframework.launcher.Main ^
+    io.staminaframework.runtime.launcher.Main ^
     %*

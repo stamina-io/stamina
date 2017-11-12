@@ -1,2 +1,2 @@
-Private-Package: io.staminaframework.asciitable, org.apache.felix.utils.properties
+Private-Package: io.staminaframework.runtime.asciitable, org.apache.felix.utils.properties
 -include: ${project.basedir}/../bnd.bnd

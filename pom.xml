@@ -20,16 +20,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.staminaframework</groupId>
+    <parent>
+        <groupId>io.staminaframework</groupId>
+        <artifactId>parent</artifactId>
+        <version>1-SNAPSHOT</version>
+    </parent>
+
+    <groupId>io.staminaframework.runtime</groupId>
     <artifactId>parent</artifactId>
     <version>0.1.0-SNAPSHOT</version>
-    <name>Stamina Parent</name>
+    <name>Stamina Runtime Parent</name>
     <packaging>pom</packaging>
 
-    <organization>
-        <name>Stamina Framework</name>
-        <url>http://staminaframework.io</url>
-    </organization>
     <url>http://staminaframework.io</url>
     <licenses>
         <license>
@@ -38,16 +40,13 @@
     </licenses>
 
     <scm>
-        <url>http://github.com/staminaframework/stamina</url>
-        <connection>scm:git:https://github.com/staminaframework/stamina.git</connection>
+        <url>http://github.com/staminaframework/stamina-runtime</url>
+        <connection>scm:git:https://github.com/staminaframework/stamina-runtime.git</connection>
     </scm>
 
     <properties>
         <stamina.build>${git.commit.id.describe-short}</stamina.build>
         <stamina.version>${project.version}</stamina.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencyManagement>

@@ -21,12 +21,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.staminaframework</groupId>
+        <groupId>io.staminaframework.runtime</groupId>
         <artifactId>parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
-    <name>Stamina ASCII Table</name>
-    <artifactId>io.staminaframework.asciitable</artifactId>
+    <name>Stamina Runtime ASCII Table</name>
+    <artifactId>io.staminaframework.runtime.asciitable</artifactId>
 
     <dependencies>
         <dependency>

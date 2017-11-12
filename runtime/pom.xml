@@ -21,7 +21,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.staminaframework</groupId>
+        <groupId>io.staminaframework.runtime</groupId>
         <artifactId>parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
@@ -32,37 +32,37 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>io.staminaframework.launcher</artifactId>
+            <artifactId>io.staminaframework.runtime.launcher</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>io.staminaframework.log</artifactId>
+            <artifactId>io.staminaframework.runtime.log</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>io.staminaframework.addon</artifactId>
+            <artifactId>io.staminaframework.runtime.addon</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>io.staminaframework.boot</artifactId>
+            <artifactId>io.staminaframework.runtime.boot</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>io.staminaframework.provisioning</artifactId>
+            <artifactId>io.staminaframework.runtime.provisioning</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>io.staminaframework.command</artifactId>
+            <artifactId>io.staminaframework.runtime.command</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>io.staminaframework.subsystem</artifactId>
+            <artifactId>io.staminaframework.runtime.subsystem</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -155,7 +155,7 @@
                         <configuration>
                             <outputDirectory>${project.build.directory}/sys-repo</outputDirectory>
                             <excludeArtifactIds>
-                                io.staminaframework.launcher,
+                                io.staminaframework.runtime.launcher,
                                 org.apache.felix.framework
                             </excludeArtifactIds>
                             <useRepositoryLayout>true</useRepositoryLayout>

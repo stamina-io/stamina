@@ -21,12 +21,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.staminaframework</groupId>
+        <groupId>io.staminaframework.runtime</groupId>
         <artifactId>parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
-    <name>Stamina Launcher</name>
-    <artifactId>io.staminaframework.launcher</artifactId>
+    <name>Stamina Runtime Launcher</name>
+    <artifactId>io.staminaframework.runtime.launcher</artifactId>
     <url>http://staminaframework.io/${project.artifactId}</url>
 
     <dependencies>
@@ -65,11 +65,11 @@
                     <relocations>
                         <relocation>
                             <pattern>org.apache.felix.utils.properties</pattern>
-                            <shadedPattern>io.staminaframework.launcher.properties</shadedPattern>
+                            <shadedPattern>io.staminaframework.runtime.launcher.properties</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.apache.felix.utils.manifest</pattern>
-                            <shadedPattern>io.staminaframework.launcher.manifest</shadedPattern>
+                            <shadedPattern>io.staminaframework.runtime.launcher.manifest</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -131,7 +131,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>io.staminaframework.launcher.Main</mainClass>
+                            <mainClass>io.staminaframework.runtime.launcher.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
