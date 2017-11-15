@@ -18,12 +18,15 @@ package io.staminaframework.runtime.provisioning.internal;
 
 import io.staminaframework.runtime.command.Command;
 import io.staminaframework.runtime.command.CommandConstants;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.log.LogService;
+import org.osgi.service.subsystem.Subsystem;
+import org.osgi.service.subsystem.SubsystemConstants;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -46,6 +49,8 @@ import java.util.List;
 public class InstallCommand implements Command {
     @Reference
     private LogService logService;
+    @Reference(target = "(" + SubsystemConstants.SUBSYSTEM_ID_PROPERTY + "=0)")
+    private Subsystem root;
     private BundleContext bundleContext;
 
     @Activate
@@ -85,14 +90,26 @@ public class InstallCommand implements Command {
             return true;
         }
 
-        final String addonsProp = System.getProperty("stamina.addons");
-        if (addonsProp == null) {
-            throw new RuntimeException("Missing system property: stamina.addons");
+        final String dataProp = System.getProperty("stamina.data");
+        if (dataProp == null) {
+            throw new RuntimeException("Missing system property: stamina.data");
         }
-        final Path addonsPath = FileSystems.getDefault().getPath(addonsProp);
-        if (!Files.exists(addonsPath) || !Files.isDirectory(addonsPath)) {
-            throw new IOException("Missing addons directory: " + addonsPath);
+        final Path dataDir = FileSystems.getDefault().getPath(dataProp);
+        if (!Files.exists(dataDir) || !Files.isDirectory(dataDir)) {
+            throw new IOException("Missing data directory: " + dataDir);
         }
+
+        final String confProp = System.getProperty("stamina.conf");
+        if (confProp == null) {
+            throw new RuntimeException("Missing system property: stamina.conf");
+        }
+        final Path confDir = FileSystems.getDefault().getPath(confProp);
+        if (!Files.exists(confDir) || !Files.isDirectory(confDir)) {
+            throw new IOException("Missing configuration directory: " + confDir);
+        }
+
+        final Path provisionDir = dataDir.resolve("provision");
+        Files.createDirectories(provisionDir);
 
         log(context.out(), "Starting platform provisioning");
 
@@ -148,7 +165,13 @@ public class InstallCommand implements Command {
                 }
 
                 final URL artifactUrl = new URL(urlSpec);
-                final Path target = addonsPath.resolve(toLocalPath(artifactUrl.toExternalForm()));
+                final String targetFileName = toLocalPath(artifactUrl.toExternalForm());
+                final Path target;
+                if (targetFileName.endsWith(".cfg")) {
+                    target = confDir.resolve(targetFileName);
+                } else {
+                    target = provisionDir.resolve(targetFileName);
+                }
                 if (Files.exists(target) && !forceInstall) {
                     log(context.out(),
                             "Artifact already exists: " + artifactUrl);
@@ -164,10 +187,23 @@ public class InstallCommand implements Command {
                     Files.copy(in, tmp, StandardCopyOption.REPLACE_EXISTING);
                 }
 
-                // Move the fully downloaded file to the addons directory.
+                // Move the fully downloaded file to the provision directory.
                 log(context.out(),
                         "Installing artifact: " + artifactUrl);
                 Files.move(tmp, target, StandardCopyOption.ATOMIC_MOVE);
+
+                // Install resource.
+                if (targetFileName.endsWith(".jar")) {
+                    try (final InputStream in = Files.newInputStream(target)) {
+                        final Bundle bundle = bundleContext.installBundle(artifactUrl.toExternalForm(), in);
+                        bundle.start();
+                    }
+                } else if (targetFileName.endsWith(".esa")) {
+                    try (final InputStream in = Files.newInputStream(target)) {
+                        final Subsystem subsystem = root.install(artifactUrl.toExternalForm(), in);
+                        subsystem.start();
+                    }
+                }
             }
         }
 
