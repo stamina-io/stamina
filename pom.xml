@@ -280,17 +280,6 @@
         </pluginManagement>
     </build>
 
-    <distributionManagement>
-        <repository>
-            <id>stamina</id>
-            <url>${env.STAMINA_REPO_RELEASES}</url>
-        </repository>
-        <snapshotRepository>
-            <id>stamina-snapshots</id>
-            <url>${env.STAMINA_REPO_SNAPSHOTS}</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <modules>
         <module>launcher</module>
         <module>asciitable</module>
