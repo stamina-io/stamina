@@ -24,6 +24,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -114,15 +115,10 @@ class SystemRepositoryIndexer {
             }
         }
 
-        final XMLStreamWriter xml;
-        try {
+        XMLStreamWriter xml = null;
+        try (final OutputStream out = Files.newOutputStream(indexFile)) {
             xml = XMLOutputFactory.newFactory().createXMLStreamWriter(
-                    Files.newOutputStream(indexFile), "UTF-8");
-        } catch (XMLStreamException e) {
-            throw new IOException("Failed to initialize XML writer", e);
-        }
-
-        try {
+                    out, "UTF-8");
             xml.writeStartDocument("UTF-8", "1.0");
             xml.writeStartElement("repository");
             xml.writeDefaultNamespace("http://www.osgi.org/xmlns/repository/v1.0.0");
@@ -173,9 +169,11 @@ class SystemRepositoryIndexer {
         } catch (XMLStreamException e) {
             throw new IOException("Failed to write repository index file", e);
         } finally {
-            try {
-                xml.close();
-            } catch (XMLStreamException ignore) {
+            if (xml != null) {
+                try {
+                    xml.close();
+                } catch (XMLStreamException ignore) {
+                }
             }
         }
     }
