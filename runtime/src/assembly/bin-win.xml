@@ -26,7 +26,12 @@
             <outputDirectory>lib</outputDirectory>
             <includes>
                 <include>*:io.staminaframework.runtime.launcher</include>
+                <include>*:io.staminaframework.runtime.log.bridge</include>
                 <include>*:org.apache.felix.framework</include>
+                <include>*:org.apache.felix.logback</include>
+                <include>*:org.apache.felix.log</include>
+                <include>ch.qos.logback:*</include>
+                <include>org.slf4j:*</include>
             </includes>
         </dependencySet>
     </dependencySets>

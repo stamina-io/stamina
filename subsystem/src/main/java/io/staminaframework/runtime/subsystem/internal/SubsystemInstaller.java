@@ -22,7 +22,8 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
+import org.osgi.service.log.LoggerFactory;
 import org.osgi.service.subsystem.Subsystem;
 import org.osgi.service.subsystem.SubsystemConstants;
 
@@ -42,13 +43,15 @@ import java.util.zip.ZipFile;
 @Component(service = ArtifactInstaller.class, immediate = true)
 public class SubsystemInstaller implements ArtifactInstaller {
     @Reference
-    private LogService logService;
+    private LoggerFactory loggerFactory;
+    private Logger logger;
     @Reference(target = "(" + SubsystemConstants.SUBSYSTEM_ID_PROPERTY + "=0)")
     private Subsystem root;
     private BundleContext bundleContext;
 
     @Activate
     public void activate(BundleContext bundleContext) throws Exception {
+        logger = loggerFactory.getLogger(getClass());
         this.bundleContext = bundleContext;
     }
 
@@ -65,13 +68,13 @@ public class SubsystemInstaller implements ArtifactInstaller {
         final String spath = artifact.getCanonicalFile().toURI().toURL().toExternalForm();
         final boolean alreadyInstalled = lookupSubsystem(root, spath) != null;
         if (alreadyInstalled) {
-            logService.log(LogService.LOG_DEBUG, "Subsystem " + sid + " is already installed");
+            logger.debug("Subsystem {} is already installed", sid);
             return;
         }
 
-        logService.log(LogService.LOG_INFO, "Installing subsystem: " + sid);
+        logger.info("Installing subsystem: {}", sid);
         final Subsystem sub = root.install(spath);
-        logService.log(LogService.LOG_INFO, "Starting subsystem: " + sid);
+        logger.info("Starting subsystem: {}", sid);
         sub.start();
     }
 
@@ -91,10 +94,10 @@ public class SubsystemInstaller implements ArtifactInstaller {
     public void update(File artifact) throws Exception {
         final Manifest man = getManifest(artifact);
         final String sid = getSubsystemId(man);
-        logService.log(LogService.LOG_INFO, "Updating subsystem: " + sid);
+        logger.info("Updating subsystem: {}", sid);
         uninstall(artifact);
         install(artifact);
-        logService.log(LogService.LOG_INFO, "Subsystem updated: " + sid);
+        logger.info("Subsystem updated: {}", sid);
     }
 
     @Override
@@ -104,9 +107,9 @@ public class SubsystemInstaller implements ArtifactInstaller {
         final Subsystem subsystem = lookupSubsystem(root, spath);
         if (subsystem != null) {
             final String sid = getSubsystemId(subsystem);
-            logService.log(LogService.LOG_INFO, "Uninstalling subsystem: " + sid);
+            logger.info("Uninstalling subsystem: {}", sid);
             subsystem.uninstall();
-            logService.log(LogService.LOG_INFO, "Subsystem uninstalled: " + sid);
+            logger.info("Subsystem uninstalled: {}", sid);
         }
     }
 
@@ -122,7 +125,7 @@ public class SubsystemInstaller implements ArtifactInstaller {
                 throw new IOException("Missing symbolic name in subsystem manifest");
             }
         } catch (IOException e) {
-            logService.log(LogService.LOG_WARNING, "Failed to open file as a subsystem: " + artifact, e);
+            logger.warn("Failed to open file as a subsystem: {}", artifact, e);
             return false;
         }
         return true;

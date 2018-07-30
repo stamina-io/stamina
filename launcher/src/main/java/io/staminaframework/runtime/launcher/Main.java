@@ -231,6 +231,7 @@ public class Main {
                     try {
                         logger.info(() -> "Installing system bundle: " + bsn);
                         b = sysCtx.installBundle("system://" + bsn);
+                        logger.debug(() -> "Setting start level: " + bsn + "@" + startLevel);
                         b.adapt(BundleStartLevel.class).setStartLevel(startLevel);
                         b.start();
                     } catch (BundleException ex) {
@@ -241,7 +242,7 @@ public class Main {
         });
 
         // If a command is set, write it with its arguments to a file,
-        // which will be read by bundle boot.helper to publish a CommandLine service.
+        // which will be read by bundle boot to publish a CommandLine service.
         boolean bootBundleFound = false;
         for (final Bundle b : sysCtx.getBundles()) {
             if ("io.staminaframework.runtime.boot".equals(b.getSymbolicName())) {

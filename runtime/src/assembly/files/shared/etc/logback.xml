@@ -14,7 +14,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<configuration scan="true" scanPeriod="60 seconds">
+<configuration scan="true" scanPeriod="10 seconds">
     <include file="${stamina.conf}/logback-custom.xml"/>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -42,9 +42,22 @@
         </encoder>
     </appender>
 
+    <appender name="OSGI" class="io.staminaframework.runtime.log.bridge.OsgiAppender">
+        <!--
+            This appender is used by the OSGi platform to get access
+            to the latest log entries, through the shell command "log:tail".
+            You are free to discard this appender from the configuration
+            if you do not intend to use this feature.
+         -->
+        <encoder>
+            <pattern>%date{HH:mm:ss.SSS} | %-5level | %32.32logger{32} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
     <root level="INFO">
         <appender-ref ref="ASYNC"/>
         <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="OSGI"/>
     </root>
 
     <logger name="io.staminaframework" level="INFO"/>

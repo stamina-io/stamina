@@ -24,7 +24,6 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.log.LogService;
 import org.osgi.service.subsystem.Subsystem;
 import org.osgi.service.subsystem.SubsystemConstants;
 
@@ -47,8 +46,6 @@ import java.util.List;
  */
 @Component(service = Command.class, property = CommandConstants.COMMAND + "=provision:install")
 public class InstallCommand implements Command {
-    @Reference
-    private LogService logService;
     @Reference(target = "(" + SubsystemConstants.SUBSYSTEM_ID_PROPERTY + "=0)")
     private Subsystem root;
     private BundleContext bundleContext;

@@ -40,20 +40,21 @@ public final class StaminaOptions {
      */
     public static Option staminaDistribution() {
         return CoreOptions.composite(
-                mavenBundle("org.slf4j", "slf4j-api").versionAsInProject().startLevel(1),
-                mavenBundle("ch.qos.logback", "logback-core").versionAsInProject().startLevel(1),
-                mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject().startLevel(1),
-                mavenBundle("org.apache.felix", "org.apache.felix.log").versionAsInProject().startLevel(1),
-                mavenBundle("org.everit.osgi", "org.everit.osgi.loglistener.slf4j").versionAsInProject().startLevel(1),
+                mavenBundle("org.apache.felix", "org.apache.felix.log.extension").versionAsInProject().startLevel(1),
                 mavenBundle("io.staminaframework.runtime", "io.staminaframework.runtime.starter.it").versionAsInProject(),
                 mavenBundle("io.staminaframework.runtime", "io.staminaframework.runtime.boot").versionAsInProject(),
                 mavenBundle("io.staminaframework.runtime", "io.staminaframework.runtime.command").versionAsInProject(),
                 mavenBundle("org.apache.felix", "org.apache.felix.configadmin").versionAsInProject(),
+                mavenBundle("org.apache.felix", "org.apache.felix.configurator").versionAsInProject(),
+                mavenBundle("org.apache.felix", "org.apache.felix.converter").versionAsInProject(),
                 mavenBundle("org.apache.felix", "org.apache.felix.fileinstall").versionAsInProject(),
                 mavenBundle("org.apache.felix", "org.apache.felix.eventadmin").versionAsInProject(),
                 mavenBundle("org.apache.felix", "org.apache.felix.scr").versionAsInProject(),
                 mavenBundle("org.apache.felix", "org.apache.felix.resolver").versionAsInProject(),
                 mavenBundle("org.apache.felix", "org.apache.felix.bundlerepository").versionAsInProject(),
+                mavenBundle("org.osgi", "osgi.promise").versionAsInProject(),
+                mavenBundle("org.osgi", "org.osgi.util.function").versionAsInProject(),
+                mavenBundle("org.osgi", "org.osgi.util.pushstream").versionAsInProject(),
                 mavenBundle("org.apache.aries.async", "org.apache.aries.async").versionAsInProject(),
                 mavenBundle("org.apache.felix", "org.apache.felix.coordinator").versionAsInProject(),
                 mavenBundle("org.apache.aries", "org.apache.aries.util").versionAsInProject(),
@@ -63,6 +64,10 @@ public final class StaminaOptions {
                 mavenBundle("io.staminaframework.runtime", "io.staminaframework.runtime.addon").versionAsInProject(),
                 frameworkProperty(Constants.FRAMEWORK_BEGINNING_STARTLEVEL).value("100"),
                 frameworkProperty(FelixConstants.BUNDLE_STARTLEVEL_PROP).value("80"),
+                frameworkProperty(Constants.FRAMEWORK_STORAGE_CLEAN).value(Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT),
+                systemPackage("org.slf4j;version=1.7"),
+                systemPackage("org.osgi.service.log;version=1.4"),
+                systemPackage("org.osgi.service.log.admin;version=1.0"),
                 junitBundles()
         );
     }

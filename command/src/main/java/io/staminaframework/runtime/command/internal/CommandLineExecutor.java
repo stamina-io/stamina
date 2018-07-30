@@ -24,7 +24,8 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
+import org.osgi.service.log.LoggerFactory;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -44,7 +45,7 @@ public class CommandLineExecutor {
     }
 
     @Reference
-    private LogService logService;
+    private LoggerFactory loggerFactory;
     @Reference
     private CommandLine commandLine;
     private ServiceTracker<Command, Command> commandTracker;
@@ -52,6 +53,8 @@ public class CommandLineExecutor {
 
     @Activate
     void activate(BundleContext ctx, Config config) throws InvalidSyntaxException {
+        final Logger logger = loggerFactory.getLogger(getClass());
+
         final Filter filter = ctx.createFilter("(&(" + Constants.OBJECTCLASS + "=" + Command.class.getName()
                 + ")(" + CommandConstants.COMMAND + "=" + commandLine.command() + "))");
         commandTracker = new ServiceTracker<>(ctx, filter, null);
@@ -59,7 +62,7 @@ public class CommandLineExecutor {
 
         // Start a new thread handling command execution.
         final Bundle systemBundle = ctx.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
-        executor = new CommandExecutorThread(config.timeout(), commandLine, commandTracker, systemBundle, logService);
+        executor = new CommandExecutorThread(config.timeout(), commandLine, commandTracker, systemBundle, logger);
         executor.start();
     }
 

@@ -23,7 +23,8 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
+import org.osgi.service.log.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -41,13 +42,15 @@ public class RegionDigraphWriter {
     private static final String DIGRAPH_FILE = "digraph";
 
     @Reference
-    private LogService logService;
+    private LoggerFactory loggerFactory;
+    private Logger logger;
     @Reference
     private RegionDigraph regionDigraph;
 
     @Activate
     public void activate(BundleContext bundleContext) {
-        logService.log(LogService.LOG_DEBUG, "Region digraph writer is enabled");
+        logger = loggerFactory.getLogger(getClass());
+        logger.debug("Region digraph writer is enabled");
 
         // Write to disk when the region digraph is first published
         // in service registry.
@@ -67,7 +70,7 @@ public class RegionDigraphWriter {
                 try {
                     saveDigraph(b);
                 } catch (IOException e) {
-                    logService.log(LogService.LOG_ERROR, "Failed to write region digraph", e);
+                    logger.error("Failed to write region digraph", e);
                 }
                 break;
             }
@@ -75,7 +78,7 @@ public class RegionDigraphWriter {
     }
 
     private void saveDigraph(Bundle regionBundle) throws IOException {
-        logService.log(LogService.LOG_DEBUG, "Saving region digraph to disk");
+        logger.debug("Saving region digraph to disk");
 
         final File digraphFile = regionBundle.getBundleContext().getDataFile(DIGRAPH_FILE);
         try (final OutputStream out = new FileOutputStream(digraphFile)) {

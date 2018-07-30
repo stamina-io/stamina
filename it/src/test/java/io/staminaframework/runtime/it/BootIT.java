@@ -38,9 +38,7 @@ import java.io.IOException;
 import static io.staminaframework.runtime.starter.it.OsgiHelper.lookupBundle;
 import static io.staminaframework.runtime.starter.it.OsgiHelper.lookupService;
 import static org.junit.Assert.*;
-import static org.ops4j.pax.exam.CoreOptions.frameworkProperty;
-import static org.ops4j.pax.exam.CoreOptions.junitBundles;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.*;
 
 /**
  * Integration tests for bundle <code>io.staminaframework.runtime.boot</code>.
@@ -55,17 +53,16 @@ public class BootIT {
     @Configuration
     public Option[] config() {
         return CoreOptions.options(
-                mavenBundle("org.slf4j", "slf4j-api").versionAsInProject().startLevel(1),
-                mavenBundle("ch.qos.logback", "logback-core").versionAsInProject().startLevel(1),
-                mavenBundle("ch.qos.logback", "logback-classic").versionAsInProject().startLevel(1),
-                mavenBundle("org.apache.felix", "org.apache.felix.log").versionAsInProject().startLevel(1),
-                mavenBundle("org.everit.osgi", "org.everit.osgi.loglistener.slf4j").versionAsInProject().startLevel(1),
+                mavenBundle("org.apache.felix", "org.apache.felix.log.extension").versionAsInProject().startLevel(1),
                 mavenBundle("io.staminaframework.runtime", "io.staminaframework.runtime.starter.it").versionAsInProject(),
                 mavenBundle("io.staminaframework.runtime", "io.staminaframework.runtime.boot").versionAsInProject().noStart(),
                 mavenBundle("org.apache.felix", "org.apache.felix.scr").versionAsInProject(),
                 mavenBundle("org.eclipse.equinox", "org.eclipse.equinox.region").versionAsInProject(),
                 frameworkProperty(Constants.FRAMEWORK_BEGINNING_STARTLEVEL).value("100"),
                 frameworkProperty(FelixConstants.BUNDLE_STARTLEVEL_PROP).value("80"),
+                systemPackage("org.slf4j;version=1.7"),
+                systemPackage("org.osgi.service.log;version=1.4"),
+                systemPackage("org.osgi.service.log.admin;version=1.0"),
                 junitBundles()
         );
     }

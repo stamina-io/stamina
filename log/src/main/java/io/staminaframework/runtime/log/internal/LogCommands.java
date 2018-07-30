@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-
 package io.staminaframework.runtime.log.internal;
 
-import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Appender;
+import io.staminaframework.runtime.log.bridge.OsgiAppender;
 import org.apache.felix.service.command.CommandSession;
 import org.apache.felix.service.command.Descriptor;
-import org.osgi.service.log.LogEntry;
-import org.osgi.service.log.LogService;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.log.LogLevel;
+import org.osgi.service.log.admin.LoggerAdmin;
+import org.osgi.service.log.admin.LoggerContext;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Log related commands.
@@ -39,102 +40,106 @@ import java.util.List;
  * @author Stamina Framework developers
  */
 class LogCommands {
-    private final OsgiBridge bridge;
+    private static final Map<String, LogLevel> LOG_LEVELS = new HashMap<>(8);
 
-    public LogCommands(final OsgiBridge bridge) {
-        this.bridge = bridge;
+    static {
+        LOG_LEVELS.put("audit", LogLevel.AUDIT);
+        LOG_LEVELS.put("debug", LogLevel.DEBUG);
+        LOG_LEVELS.put("error", LogLevel.ERROR);
+        LOG_LEVELS.put("info", LogLevel.INFO);
+        LOG_LEVELS.put("warn", LogLevel.WARN);
+        LOG_LEVELS.put("trace", LogLevel.TRACE);
+    }
+
+    private final BundleContext bundleContext;
+
+    public LogCommands(final BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+    }
+
+    private static LogLevel toLogLevel(String s) {
+        final LogLevel level;
+        if (s == null) {
+            level = null;
+        } else {
+            level = LOG_LEVELS.get(s.toLowerCase());
+        }
+        if (level == null) {
+            throw new IllegalArgumentException("Invalid log level: " + s);
+        }
+        return level;
+    }
+
+    private <S, R> R useServiceIfAvailable(Class<S> serviceClass, Function<S, R> op) {
+        final ServiceReference<S> ref = bundleContext.getServiceReference(serviceClass);
+        if (ref != null) {
+            try {
+                final S svc = bundleContext.getService(ref);
+                return op.apply(svc);
+            } finally {
+                bundleContext.ungetService(ref);
+            }
+        }
+        return null;
     }
 
     @Descriptor("Set log level for a logger")
     public void set(@Descriptor("logger name") String logger,
-                    @Descriptor("logger level") String level) throws IOException {
-        ((Logger) LoggerFactory.getLogger(logger)).setLevel(Level.toLevel(level));
+                    @Descriptor("logger level") String level) {
+        final LogLevel logLevel = toLogLevel(level);
+        useServiceIfAvailable(LoggerAdmin.class, svc -> {
+            final LoggerContext ctx = svc.getLoggerContext(null);
+            final Map<String, LogLevel> levels = ctx.getLogLevels();
+            levels.put(logger, logLevel);
+            ctx.setLogLevels(levels);
+            return true;
+        });
     }
 
     @Descriptor("Get log level")
     public void get(CommandSession session,
-                    @Descriptor("logger names") String... loggers) throws IOException {
-        if (loggers == null || loggers.length == 0) {
-            final List<String> loggerNames = new ArrayList<>(8);
-            final LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-            for (final Logger logger : loggerContext.getLoggerList()) {
-                if (logger.getLevel() != null) {
-                    loggerNames.add(logger.getName());
-                }
+                    @Descriptor("logger names") String... loggers) {
+        useServiceIfAvailable(LoggerAdmin.class, svc -> {
+            final LoggerContext ctx = svc.getLoggerContext(null);
+            final LogLevel rootLevel = ctx.getEffectiveLogLevel(Logger.ROOT_LOGGER_NAME);
+            if (rootLevel != null) {
+                session.getConsole().println("Default log level is " + rootLevel);
             }
-            Collections.sort(loggerNames, LoggerNameComparator.INSTANCE);
-            loggers = loggerNames.toArray(new String[loggerNames.size()]);
-        }
-        for (final String logger : loggers) {
-            final String level = ((Logger) LoggerFactory.getLogger(logger)).getEffectiveLevel().toString();
-            session.getConsole().println(logger + "=" + level);
-        }
+
+            final Map<String, LogLevel> logLevels = new HashMap<>(4);
+            if (loggers != null && loggers.length != 0) {
+                for (final String logger : loggers) {
+                    final LogLevel level = ctx.getEffectiveLogLevel(logger);
+                    if (level != null) {
+                        logLevels.put(logger, level);
+                    }
+                }
+            } else {
+                logLevels.putAll(ctx.getLogLevels());
+            }
+
+            logLevels.keySet().stream().sorted().forEach(logger -> {
+                session.getConsole().println(logger + "=" + logLevels.get(logger));
+            });
+            return true;
+        });
     }
 
     @Descriptor("Display last log entries")
     public void tail(CommandSession session) {
-        final List<LogEntry> entries = Collections.list(bridge.getLog());
-        Collections.sort(entries, LogEntryComparator.INSTANCE);
-
-        final PrintStream out = session.getConsole();
-        for (final LogEntry log : entries) {
-            out.println(log.getMessage());
-
-            final Throwable error = log.getException();
-            if (error != null) {
-                error.printStackTrace(out);
+        final ch.qos.logback.classic.LoggerContext loggerContext =
+                (ch.qos.logback.classic.LoggerContext) LoggerFactory.getILoggerFactory();
+        for (final Logger logger : loggerContext.getLoggerList()) {
+            for (final Iterator<Appender<ILoggingEvent>> i = logger.iteratorForAppenders(); i.hasNext(); ) {
+                final Appender<ILoggingEvent> appender = i.next();
+                if (appender instanceof OsgiAppender) {
+                    final OsgiAppender<?> osgiAppender = (OsgiAppender) appender;
+                    for (final String entry : osgiAppender.getLogEntries()) {
+                        session.getConsole().println(entry);
+                    }
+                    return;
+                }
             }
-        }
-    }
-
-    @Descriptor("Clear log entries stored in memory")
-    public void clear() {
-        bridge.clear();
-    }
-
-    private static String formatLevel(int level) {
-        switch (level) {
-            case LogService.LOG_DEBUG:
-                return "DEBUG";
-            case LogService.LOG_ERROR:
-                return "ERROR";
-            case LogService.LOG_WARNING:
-                return "WARNING";
-            case LogService.LOG_INFO:
-            default:
-                return "INFO";
-        }
-    }
-
-    private static class LogEntryComparator implements Comparator<LogEntry> {
-        public static final Comparator<LogEntry> INSTANCE = new LogEntryComparator();
-
-        @Override
-        public int compare(LogEntry o1, LogEntry o2) {
-            final long t1 = o1.getTime();
-            final long t2 = o2.getTime();
-            if (t1 < t2) {
-                return -1;
-            }
-            if (t1 > t2) {
-                return 1;
-            }
-            return 0;
-        }
-    }
-
-    private static class LoggerNameComparator implements Comparator<String> {
-        public static final Comparator<String> INSTANCE = new LoggerNameComparator();
-
-        @Override
-        public int compare(String o1, String o2) {
-            if (Logger.ROOT_LOGGER_NAME.equals(o1)) {
-                return -1;
-            }
-            if (Logger.ROOT_LOGGER_NAME.equals(o2)) {
-                return 1;
-            }
-            return o1.compareTo(o2);
         }
     }
 }

@@ -16,6 +16,7 @@ if not exist "%JAVA_CMD%" set JAVA_CMD=java
 "%JAVA_CMD%" %STAMINA_OPTS% ^
     "-Dstamina.home=%STAMINA_HOME%" ^
     "-Djava.util.logging.config.file=%STAMINA_HOME%\etc\java.util.logging.properties" ^
+    "-Dlogback.configurationFile=file:%STAMINA_HOME%\etc\logback.xml" ^
     -cp "%STAMINA_HOME%\lib\*" ^
     io.staminaframework.runtime.launcher.Main ^
     %*

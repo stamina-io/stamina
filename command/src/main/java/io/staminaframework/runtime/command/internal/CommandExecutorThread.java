@@ -20,7 +20,7 @@ import io.staminaframework.runtime.boot.CommandLine;
 import io.staminaframework.runtime.command.Command;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
-import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
 import org.osgi.util.tracker.ServiceTracker;
 
 import java.util.concurrent.TimeUnit;
@@ -30,13 +30,13 @@ class CommandExecutorThread extends Thread {
     private final CommandLine commandLine;
     private final ServiceTracker<Command, Command> commandTracker;
     private final Bundle systemBundle;
-    private final LogService logService;
+    private final Logger logger;
 
     public CommandExecutorThread(final long commandTimeout,
                                  final CommandLine commandLine,
                                  final ServiceTracker<Command, Command> commandTracker,
                                  final Bundle systemBundle,
-                                 final LogService logService) {
+                                 final Logger logger) {
         super("Stamina Command Executor Thread");
         setPriority(Thread.MIN_PRIORITY);
         setDaemon(false);
@@ -44,14 +44,14 @@ class CommandExecutorThread extends Thread {
         this.commandLine = commandLine;
         this.commandTracker = commandTracker;
         this.systemBundle = systemBundle;
-        this.logService = logService;
+        this.logger = logger;
     }
 
     @Override
     public void run() {
         try {
             // Waiting for a command.
-            logService.log(LogService.LOG_INFO, "Waiting for command: " + commandLine.command());
+            logger.info("Waiting for command: {}", commandLine.command());
             final Command cmd = commandTracker.waitForService(TimeUnit.SECONDS.toMillis(commandTimeout));
             if (cmd != null) {
                 final CommandContext ctx = new CommandContext(commandLine.arguments(), commandLine.workingDirectory(),
@@ -59,10 +59,10 @@ class CommandExecutorThread extends Thread {
                 boolean keepPlatformRunning = false;
                 try {
                     // Got one command: let's go!
-                    logService.log(LogService.LOG_INFO, "Executing command-line: $ " + commandLine);
+                    logger.info("Executing command-line: $ {}", commandLine);
                     keepPlatformRunning = cmd.execute(ctx);
                 } catch (Exception e) {
-                    logService.log(LogService.LOG_ERROR, "Command execution failed", e);
+                    logger.error("Command execution failed", e);
                 } finally {
                     // Stop framework after command execution.
                     if (!keepPlatformRunning) {
@@ -70,11 +70,11 @@ class CommandExecutorThread extends Thread {
                     }
                 }
             } else {
-                logService.log(LogService.LOG_ERROR, "Command not found: " + commandLine.command());
+                logger.error("Command not found: {}", commandLine.command());
                 stopFramework();
             }
         } catch (InterruptedException e) {
-            logService.log(LogService.LOG_DEBUG, "Command executor thread interrupted");
+            logger.debug("Command executor thread interrupted");
         }
     }
 
@@ -82,7 +82,7 @@ class CommandExecutorThread extends Thread {
         try {
             systemBundle.stop();
         } catch (BundleException e) {
-            logService.log(LogService.LOG_ERROR, "Failed to stop system bundle", e);
+            logger.error("Failed to stop system bundle", e);
         }
     }
 }

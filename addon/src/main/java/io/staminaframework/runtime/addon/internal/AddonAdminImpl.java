@@ -25,7 +25,8 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
+import org.osgi.service.log.LoggerFactory;
 import org.osgi.service.subsystem.Subsystem;
 import org.osgi.service.subsystem.SubsystemConstants;
 import org.osgi.service.url.URLConstants;
@@ -40,7 +41,8 @@ import org.osgi.service.url.URLStreamHandlerService;
         configurationPid = "io.staminaframework.runtime.addon")
 public class AddonAdminImpl implements AddonAdmin {
     @Reference
-    private LogService logService;
+    private LoggerFactory loggerFactory;
+    private Logger logger;
     @Reference(target = "(" + SubsystemConstants.SUBSYSTEM_ID_PROPERTY + "=0)")
     private Subsystem root;
 
@@ -64,6 +66,8 @@ public class AddonAdminImpl implements AddonAdmin {
 
     @Activate
     void activate(BundleContext bundleContext, Config config) {
+        logger = loggerFactory.getLogger(getClass());
+
         this.bundleContext = bundleContext;
         if (config.addons() != null) {
             for (final String addon : config.addons()) {
@@ -91,14 +95,14 @@ public class AddonAdminImpl implements AddonAdmin {
 
     private void doInstallAddon(String location) {
         if (isSubsystemInstalled(location, root)) {
-            logService.log(LogService.LOG_DEBUG, "Addon is already installed: " + location);
+            logger.debug("Addon is already installed: {}", location);
             return;
         }
 
-        logService.log(LogService.LOG_INFO, "Installing addon: " + location);
+        logger.info("Installing addon: {}", location);
         final Subsystem subsystem = root.install(location);
 
-        logService.log(LogService.LOG_INFO, "Starting addon: " + location);
+        logger.info("Starting addon: {}", location);
         subsystem.start();
 
         // Refresh bundles, in case the new subsystem brings major package updates.

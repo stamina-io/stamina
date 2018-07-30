@@ -21,7 +21,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
+import org.osgi.service.log.LoggerFactory;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -39,13 +40,15 @@ import java.util.Hashtable;
 @Component
 public class CommandLineManager {
     @Reference
-    private LogService logService;
+    private LoggerFactory loggerFactory;
 
     @Activate
     public void activate(BundleContext bundleContext) {
+        final Logger logger = loggerFactory.getLogger(getClass());
+
         final File cmdFile = bundleContext.getDataFile("cmd.dat");
         if (cmdFile.exists()) {
-            logService.log(LogService.LOG_DEBUG, "Reading command-line data file: " + cmdFile);
+            logger.debug("Reading command-line data file: {}", cmdFile);
 
             try (final DataInputStream in = new DataInputStream(new FileInputStream(cmdFile))) {
                 final String cmd = in.readUTF();
@@ -69,16 +72,16 @@ public class CommandLineManager {
                 final Dictionary<String, Object> cmdLineProps = new Hashtable<>(1);
                 cmdLineProps.put("command", cmd);
 
-                logService.log(LogService.LOG_INFO, "Command-line found: $ " + cmdLine);
+                logger.info("Command-line found: $ {}", cmdLine);
                 bundleContext.registerService(CommandLine.class, cmdLine, cmdLineProps);
             } catch (IOException e) {
-                logService.log(LogService.LOG_ERROR, "Failed to read command-line data", e);
+                logger.error("Failed to read command-line data", e);
             } finally {
                 // It's safe to remove the command-line data file once it's been read.
                 cmdFile.delete();
             }
         } else {
-            logService.log(LogService.LOG_DEBUG, "No command-line data file found");
+            logger.debug("No command-line data file found");
         }
     }
 }

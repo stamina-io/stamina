@@ -1,3 +1,2 @@
-Export-Package: org.osgi.service.log
 Bundle-Activator: io.staminaframework.runtime.log.internal.Activator
 -include: ${project.basedir}/../bnd.bnd
