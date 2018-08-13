@@ -39,13 +39,11 @@ import java.util.Hashtable;
  */
 @Component
 public class CommandLineManager {
-    @Reference
-    private LoggerFactory loggerFactory;
+    @Reference(service = LoggerFactory.class)
+    private Logger logger;
 
     @Activate
     public void activate(BundleContext bundleContext) {
-        final Logger logger = loggerFactory.getLogger(getClass());
-
         final File cmdFile = bundleContext.getDataFile("cmd.dat");
         if (cmdFile.exists()) {
             logger.debug("Reading command-line data file: {}", cmdFile);

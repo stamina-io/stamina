@@ -42,8 +42,7 @@ import java.util.zip.ZipFile;
  */
 @Component(service = ArtifactInstaller.class, immediate = true)
 public class SubsystemInstaller implements ArtifactInstaller {
-    @Reference
-    private LoggerFactory loggerFactory;
+    @Reference(service = LoggerFactory.class)
     private Logger logger;
     @Reference(target = "(" + SubsystemConstants.SUBSYSTEM_ID_PROPERTY + "=0)")
     private Subsystem root;
@@ -51,7 +50,6 @@ public class SubsystemInstaller implements ArtifactInstaller {
 
     @Activate
     public void activate(BundleContext bundleContext) throws Exception {
-        logger = loggerFactory.getLogger(getClass());
         this.bundleContext = bundleContext;
     }
 

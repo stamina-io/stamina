@@ -44,8 +44,8 @@ public class CommandLineExecutor {
         long timeout() default 0L;
     }
 
-    @Reference
-    private LoggerFactory loggerFactory;
+    @Reference(service = LoggerFactory.class)
+    private Logger logger;
     @Reference
     private CommandLine commandLine;
     private ServiceTracker<Command, Command> commandTracker;
@@ -53,8 +53,6 @@ public class CommandLineExecutor {
 
     @Activate
     void activate(BundleContext ctx, Config config) throws InvalidSyntaxException {
-        final Logger logger = loggerFactory.getLogger(getClass());
-
         final Filter filter = ctx.createFilter("(&(" + Constants.OBJECTCLASS + "=" + Command.class.getName()
                 + ")(" + CommandConstants.COMMAND + "=" + commandLine.command() + "))");
         commandTracker = new ServiceTracker<>(ctx, filter, null);

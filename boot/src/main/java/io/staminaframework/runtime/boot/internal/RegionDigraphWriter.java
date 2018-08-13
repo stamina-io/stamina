@@ -41,15 +41,13 @@ import java.io.OutputStream;
 public class RegionDigraphWriter {
     private static final String DIGRAPH_FILE = "digraph";
 
-    @Reference
-    private LoggerFactory loggerFactory;
+    @Reference(service = LoggerFactory.class)
     private Logger logger;
     @Reference
     private RegionDigraph regionDigraph;
 
     @Activate
     public void activate(BundleContext bundleContext) {
-        logger = loggerFactory.getLogger(getClass());
         logger.debug("Region digraph writer is enabled");
 
         // Write to disk when the region digraph is first published

@@ -40,8 +40,7 @@ import org.osgi.service.url.URLStreamHandlerService;
 @Component(service = AddonAdmin.class, immediate = true,
         configurationPid = "io.staminaframework.runtime.addon")
 public class AddonAdminImpl implements AddonAdmin {
-    @Reference
-    private LoggerFactory loggerFactory;
+    @Reference(service = LoggerFactory.class)
     private Logger logger;
     @Reference(target = "(" + SubsystemConstants.SUBSYSTEM_ID_PROPERTY + "=0)")
     private Subsystem root;
@@ -66,8 +65,6 @@ public class AddonAdminImpl implements AddonAdmin {
 
     @Activate
     void activate(BundleContext bundleContext, Config config) {
-        logger = loggerFactory.getLogger(getClass());
-
         this.bundleContext = bundleContext;
         if (config.addons() != null) {
             for (final String addon : config.addons()) {
